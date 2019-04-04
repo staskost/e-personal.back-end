@@ -63,9 +63,6 @@ public class User {
 	@Column(name = "random_num")
 	private String randomNum;
 
-	@Column(name = "address")
-	private String address;
-
 	@OneToMany
 	@JoinColumn(name = "fk_sender_id", referencedColumnName = "iduser")
 	@JsonIgnore
@@ -118,7 +115,7 @@ public class User {
 //	}
 
 	public User(String username, String password, Role role, String firstName, String lastName, String email,
-			double price, String description, String address) {
+			double price, String description) {
 		this.username = username;
 		this.password = password;
 		this.role = role;
@@ -127,7 +124,6 @@ public class User {
 		this.email = email;
 		this.price = price;
 		this.description = description;
-		this.address = address;
 	}
 
 	public int getId() {
@@ -226,13 +222,6 @@ public class User {
 		this.randomNum = randomNum;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
 //	public List<Message> getFromMsgs() {
 //		return fromMsgs;
 //	}

@@ -71,14 +71,14 @@ public class UserController {
 		Area.validateArea(area);
 		return userRepository.findByTrainerAreasAndPriceLessThanEqual(area, price);
 	}
-	
-	@GetMapping("byPrice/{priceMin}/{priceMax}")
-	public List<User> getTrainerByPrice(@PathVariable double priceMin, @PathVariable double priceMax) {
-		return userRepository.findByPriceBetween(priceMin, priceMax);
+
+	@GetMapping("byPrice/{priceMax}")
+	public List<User> getTrainerByPrice(@PathVariable double priceMax) {
+		return userRepository.findByPriceGreaterThanAndPriceLessThanEqual(0, priceMax);
 	}
-	
+
 	@GetMapping("all-trainers")
-	public List<User> getAllTrainers(@RequestBody Role role){
+	public List<User> getAllTrainers(@RequestBody Role role) {
 		return userRepository.findByRole(role);
 	}
 
@@ -127,7 +127,7 @@ public class UserController {
 		trainingTypeRepository.addType(fk_trainer_id, fk_training_type);
 	}
 
-	@PostMapping("trainer-remove-area/{fk_trainer_id}/{fk_area_id}")
+	@PostMapping("trainer-remove-area/{fk_trainer_id}/{fk_area_id}")// maybe
 	public void removeArea(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_trainer_id,
 			@PathVariable int fk_area_id) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
@@ -135,12 +135,38 @@ public class UserController {
 		areaRepository.removeArea(fk_trainer_id, fk_area_id);
 	}
 
-	@PostMapping("trainer-remove-type/{fk_trainer_id}/{fk_training_type}")
+	@PostMapping("trainer-remove-type/{fk_trainer_id}/{fk_training_type}") // maybe
 	public void removeType(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_trainer_id,
 			@PathVariable int fk_training_type) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Token.validateToken(token);
 		trainingTypeRepository.removeType(fk_trainer_id, fk_training_type);
+	}
+
+	@PostMapping("/addAreas/{userId}")// maybe
+	public void addAreas(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int userId,
+			@RequestBody List<Area> areas) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Token.validateToken(token);
+		for (Area area : areas) {
+			areaRepository.addArea(userId, area.getId());
+		}
+	}
+
+	@PostMapping("/addTrainingTypes/{userId}")// maybe
+	public void addTrainingTypes(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int userId,
+			@RequestBody List<TrainingType> types) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Token.validateToken(token);
+		User user = userRepository.findById(userId);
+		User.validateUser(user);
+		List<TrainingType> TrainingTypesThatTrainerHas = trainingTypeRepository.findByTrainers(user);
+		for (TrainingType type : TrainingTypesThatTrainerHas) {
+			trainingTypeRepository.removeType(userId, type.getId());
+		}
+		for (TrainingType type : types) {
+			trainingTypeRepository.addType(userId, type.getId());
+		}
 	}
 
 	@PostMapping("bann-user/{iduser}")
