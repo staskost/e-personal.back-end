@@ -1,6 +1,5 @@
 package com.msg.msg.entities;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -14,12 +13,8 @@ import javax.persistence.ManyToOne;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.msg.msg.repositories.TokenRepository;
-
 @Entity
-public class Token implements Serializable {
-
-	private static final long serialVersionUID = 1525865422256695772L;
+public class Token {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

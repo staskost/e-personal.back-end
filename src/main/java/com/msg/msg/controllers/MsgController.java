@@ -84,7 +84,6 @@ public class MsgController {
 		Token.validateToken(token);
 		int senderId = token.getUser().getId();
 		User sender = userRepository.findById(senderId);
-//		User.validateUser(sender);
 		User receiver = userRepository.findByUsername(receiverUsername);
 		User.validateUser(receiver);
 		Message message = new Message(sender, receiver, content);

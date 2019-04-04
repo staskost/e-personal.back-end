@@ -143,7 +143,10 @@ public class TrainingSessionController {
 
 	@GetMapping("/review/{idtraining_session}")
 	public Review getSessionReview(@PathVariable int idtraining_session) {
-		return reviewRepository.getSessionComment(idtraining_session);
+//		return reviewRepository.getSessionComment(idtraining_session);
+		TrainingSession trainingSession =trainingSessionRepository.findById(idtraining_session);
+		TrainingSession.validateTrainingSession(trainingSession);
+		return reviewRepository.findBySession(trainingSession);
 	}
 
 	@GetMapping("/review-trainer/{fk_trainer_id}")

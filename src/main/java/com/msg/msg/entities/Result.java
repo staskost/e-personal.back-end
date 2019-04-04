@@ -36,7 +36,7 @@ public class Result<T> {
 	}
 	
 	public static void validateIndexes(int index1, int index2) {
-		if((index1<0)||(index2<0)||(index2-index1>100)||(index2-index1<0)){
+		if((index1<0)||(index2<0)||(index2-index1>50)){
 			throw new ResponseStatusException(
 			           HttpStatus.BAD_REQUEST, "Invalid index");
 		}

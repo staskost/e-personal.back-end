@@ -1,6 +1,5 @@
 package com.msg.msg.entities;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -14,9 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "message")
-public class Message implements Serializable {
-
-	private static final long serialVersionUID = 7083047305153313695L;
+public class Message {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

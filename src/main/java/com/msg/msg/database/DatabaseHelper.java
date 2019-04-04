@@ -33,12 +33,12 @@ public class DatabaseHelper {
 	public static int getSentMsgCount(int id) {
 	try (Connection conn = getConnection();
 			PreparedStatement ps = conn
-					.prepareStatement("select count(*) from tseam_six_3.message where fk_sender_id=?");) {
+					.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message WHERE fk_sender_id=?");) {
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
 		int count  = 0;
 		if(rs.next()) {
-			count = rs.getInt("count(*)");
+			count = rs.getInt("COUNT(*)");
 		}
 		return count;
 	} catch (Exception e) {
@@ -49,12 +49,12 @@ public class DatabaseHelper {
 	public static int getInboxMsgCount(int id) {
 	try (Connection conn = getConnection();
 			PreparedStatement ps = conn
-					.prepareStatement("select count(*) from tseam_six_3.message where fk_receiver_id=?");) {
+					.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message WHERE fk_receiver_id=?");) {
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
 		int count  = 0;
 		if(rs.next()) {
-			count = rs.getInt("count(*)");
+			count = rs.getInt("COUNT(*)");
 		}
 		return count;
 	} catch (Exception e) {
@@ -65,7 +65,8 @@ public class DatabaseHelper {
 	public static int getUsersMsgCount(int senderId, int receiverId) {
 	try (Connection conn = getConnection();
 			PreparedStatement ps = conn
-					.prepareStatement("select count(*) from tseam_six_3.message where fk_receiver_id=? and fk_sender_id=? or fk_receiver_id=? and fk_sender_id=?");) {
+					.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message "
+							+ "WHERE fk_receiver_id=? AND fk_sender_id=? OR fk_receiver_id=? AND fk_sender_id=?");) {
 		ps.setInt(1, receiverId);
 		ps.setInt(2, senderId);
 		ps.setInt(3, senderId);
@@ -73,7 +74,7 @@ public class DatabaseHelper {
 		ResultSet rs = ps.executeQuery();
 		int count  = 0;
 		if(rs.next()) {
-			count = rs.getInt("count(*)");
+			count = rs.getInt("COUNT(*)");
 		}
 		return count;
 	} catch (Exception e) {
@@ -84,13 +85,13 @@ public class DatabaseHelper {
 	public static int getTrainersReviews(int id) {
 	try (Connection conn = getConnection();
 			PreparedStatement ps = conn
-					.prepareStatement("Select count(*) from review,training_session,user "
-							+ "where review.fk_session_id = idtraining_session and iduser = ?");) {
+					.prepareStatement("SELECT COUNT(*) FROM review,training_session,user "
+							+ "WHERE review.fk_session_id = idtraining_session AND iduser = ?");) {
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
 		int count  = 0;
 		if(rs.next()) {
-			count = rs.getInt("count(*)");
+			count = rs.getInt("COUNT(*)");
 		}
 		return count;
 	} catch (Exception e) {

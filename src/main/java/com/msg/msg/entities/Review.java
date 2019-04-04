@@ -21,7 +21,7 @@ public class Review {
 	@Column(name = "id")
 	private int id;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "fk_session_id", referencedColumnName = "idtraining_session")
 	private TrainingSession session;
 

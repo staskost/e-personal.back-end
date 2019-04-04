@@ -48,8 +48,6 @@ public class TrainingSession {
 	@Column(name = "is_canceled")
 	private int cancelationStatus;
 
-//	@Column(name = "comments")
-//	private String comments;
 
 	public TrainingSession() {
 	}
