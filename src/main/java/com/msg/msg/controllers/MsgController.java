@@ -3,6 +3,7 @@ package com.msg.msg.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +44,8 @@ public class MsgController {
 		Token.validateToken(token);
 		Result.validateIndexes(index1, index2);
 		int senderId = token.getUser().getId();
-		List<Message> msgs = messageRepository.findSentMessages(senderId, index1, index2);
+		User sender = userRepository.findById(senderId);
+		List<Message> msgs = messageRepository.findBySenderOrderByDateDesc(sender, PageRequest.of(index1, index2));
 		int count = DatabaseHelper.getSentMsgCount(senderId);
 		return new Result<Message>(count, msgs);
 	}
@@ -55,7 +57,8 @@ public class MsgController {
 		Token.validateToken(token);
 		Result.validateIndexes(index1, index2);
 		int receiverId = token.getUser().getId();
-		List<Message> msgs = messageRepository.findInboxMessages(receiverId, index1, index2);
+		User receiver = userRepository.findById(receiverId);
+		List<Message> msgs = messageRepository.findByReceiverOrderByDateDesc(receiver, PageRequest.of(index1, index2));
 		int count = DatabaseHelper.getInboxMsgCount(receiverId);
 		return new Result<Message>(count, msgs);
 	}
@@ -71,8 +74,7 @@ public class MsgController {
 		User.validateUser(trainer);
 		User client = userRepository.findByUsername(clientUsername);
 		User.validateUser(client);
-		List<Message> msgs = messageRepository.findUserMessages(client.getId(), trainer.getId(), trainer.getId(),
-				client.getId(), index1, index2);
+		List<Message> msgs = messageRepository.findBySenderAndReceiverOrReceiverAndSenderOrderByDateDesc(trainer, client, client, trainer, PageRequest.of(index1, index2));
 		int count = DatabaseHelper.getUsersMsgCount(trainer.getId(), client.getId());
 		return new Result<Message>(count, msgs);
 	}
