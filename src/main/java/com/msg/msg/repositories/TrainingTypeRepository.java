@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.msg.msg.entities.Area;
 import com.msg.msg.entities.TrainingType;
 import com.msg.msg.entities.User;
 
@@ -17,7 +16,7 @@ import com.msg.msg.entities.User;
 public interface TrainingTypeRepository extends JpaRepository<TrainingType, Integer> {
 
 	TrainingType findById(int id);
-	
+
 	List<TrainingType> findAll();
 
 	@Modifying
@@ -29,6 +28,6 @@ public interface TrainingTypeRepository extends JpaRepository<TrainingType, Inte
 	@Query(value = "DELETE FROM trainer_specialization WHERE fk_trainer_id =:trainerId AND fk_training_type =:typeId", nativeQuery = true)
 	@Transactional
 	void removeType(@Param("trainerId") int fk_trainer_id, @Param("typeId") int fk_training_type);
-	
+
 	List<TrainingType> findByTrainers(User user);
 }

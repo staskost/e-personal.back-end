@@ -39,42 +39,42 @@ public class MsgController {
 
 	@GetMapping("/sent")
 	public Result<Message> getSentMessages(@RequestHeader(value ="X-MSG-AUTH") String alphanumeric,
-			@RequestParam int index1, @RequestParam int index2) {
+			@RequestParam int start, @RequestParam int end) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Token.validateToken(token);
-		Result.validateIndexes(index1, index2);
+		Result.validateIndexes(start, end);
 		int senderId = token.getUser().getId();
 		User sender = userRepository.findById(senderId);
-		List<Message> msgs = messageRepository.findBySenderOrderByDateDesc(sender, PageRequest.of(index1, index2));
+		List<Message> msgs = messageRepository.findBySenderOrderByDateDesc(sender, PageRequest.of(start, end));
 		int count = DatabaseHelper.getSentMsgCount(senderId);
 		return new Result<Message>(count, msgs);
 	}
 
 	@GetMapping("/inbox")
 	public Result<Message> getInboxMessages(@RequestHeader(value ="X-MSG-AUTH") String alphanumeric,
-			@RequestParam int index1, @RequestParam int index2) {
+			@RequestParam int start, @RequestParam int end) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Token.validateToken(token);
-		Result.validateIndexes(index1, index2);
+		Result.validateIndexes(start, end);
 		int receiverId = token.getUser().getId();
 		User receiver = userRepository.findById(receiverId);
-		List<Message> msgs = messageRepository.findByReceiverOrderByDateDesc(receiver, PageRequest.of(index1, index2));
+		List<Message> msgs = messageRepository.findByReceiverOrderByDateDesc(receiver, PageRequest.of(start, end));
 		int count = DatabaseHelper.getInboxMsgCount(receiverId);
 		return new Result<Message>(count, msgs);
 	}
 
 	@GetMapping("/UsersMsg/{trainerUsername}/{clientUsername}")
 	public Result<Message> getUserMessages(@RequestHeader(value ="X-MSG-AUTH") String alphanumeric,
-			@PathVariable String trainerUsername, @PathVariable String clientUsername, @RequestParam int index1,
-			@RequestParam int index2) {
+			@PathVariable String trainerUsername, @PathVariable String clientUsername, @RequestParam int start,
+			@RequestParam int end) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Token.validateToken(token);
-		Result.validateIndexes(index1, index2);
+		Result.validateIndexes(start, end);
 		User trainer = userRepository.findByUsername(trainerUsername);
 		User.validateUser(trainer);
 		User client = userRepository.findByUsername(clientUsername);
 		User.validateUser(client);
-		List<Message> msgs = messageRepository.findBySenderAndReceiverOrReceiverAndSenderOrderByDateDesc(trainer, client, client, trainer, PageRequest.of(index1, index2));
+		List<Message> msgs = messageRepository.findBySenderAndReceiverOrReceiverAndSenderOrderByDateDesc(trainer, client, client, trainer, PageRequest.of(start, end));
 		int count = DatabaseHelper.getUsersMsgCount(trainer.getId(), client.getId());
 		return new Result<Message>(count, msgs);
 	}

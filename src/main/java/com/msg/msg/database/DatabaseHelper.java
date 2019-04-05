@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-
 public class DatabaseHelper {
 
 	public DatabaseHelper() {
@@ -29,75 +28,87 @@ public class DatabaseHelper {
 
 		return conn;
 	}
-	
+
 	public static int getSentMsgCount(int id) {
-	try (Connection conn = getConnection();
-			PreparedStatement ps = conn
-					.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message WHERE fk_sender_id=?");) {
-		ps.setInt(1, id);
-		ResultSet rs = ps.executeQuery();
-		int count  = 0;
-		if(rs.next()) {
-			count = rs.getInt("COUNT(*)");
+		try (Connection conn = getConnection();
+				PreparedStatement ps = conn
+						.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message WHERE fk_sender_id=?");) {
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			if (rs.next()) {
+				count = rs.getInt("COUNT(*)");
+			}
+			return count;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
 		}
-		return count;
-	} catch (Exception e) {
-		throw new RuntimeException(e.getMessage(), e);
 	}
-}
-	
+
 	public static int getInboxMsgCount(int id) {
-	try (Connection conn = getConnection();
-			PreparedStatement ps = conn
-					.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message WHERE fk_receiver_id=?");) {
-		ps.setInt(1, id);
-		ResultSet rs = ps.executeQuery();
-		int count  = 0;
-		if(rs.next()) {
-			count = rs.getInt("COUNT(*)");
+		try (Connection conn = getConnection();
+				PreparedStatement ps = conn
+						.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message WHERE fk_receiver_id=?");) {
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			if (rs.next()) {
+				count = rs.getInt("COUNT(*)");
+			}
+			return count;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
 		}
-		return count;
-	} catch (Exception e) {
-		throw new RuntimeException(e.getMessage(), e);
 	}
-}
-	
+
 	public static int getUsersMsgCount(int senderId, int receiverId) {
-	try (Connection conn = getConnection();
-			PreparedStatement ps = conn
-					.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message "
-							+ "WHERE fk_receiver_id=? AND fk_sender_id=? OR fk_receiver_id=? AND fk_sender_id=?");) {
-		ps.setInt(1, receiverId);
-		ps.setInt(2, senderId);
-		ps.setInt(3, senderId);
-		ps.setInt(4, receiverId);
-		ResultSet rs = ps.executeQuery();
-		int count  = 0;
-		if(rs.next()) {
-			count = rs.getInt("COUNT(*)");
+		try (Connection conn = getConnection();
+				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message "
+						+ "WHERE fk_receiver_id=? AND fk_sender_id=? OR fk_receiver_id=? AND fk_sender_id=?");) {
+			ps.setInt(1, receiverId);
+			ps.setInt(2, senderId);
+			ps.setInt(3, senderId);
+			ps.setInt(4, receiverId);
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			if (rs.next()) {
+				count = rs.getInt("COUNT(*)");
+			}
+			return count;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
 		}
-		return count;
-	} catch (Exception e) {
-		throw new RuntimeException(e.getMessage(), e);
 	}
-}
-	
+
 	public static int getTrainersReviews(int id) {
-	try (Connection conn = getConnection();
-			PreparedStatement ps = conn
-					.prepareStatement("SELECT COUNT(*) FROM review,training_session,user "
-							+ "WHERE review.fk_session_id = idtraining_session AND iduser = ?");) {
-		ps.setInt(1, id);
-		ResultSet rs = ps.executeQuery();
-		int count  = 0;
-		if(rs.next()) {
-			count = rs.getInt("COUNT(*)");
+		try (Connection conn = getConnection();
+				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM review,training_session,user "
+						+ "WHERE review.fk_session_id = idtraining_session AND iduser = ?");) {
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			if (rs.next()) {
+				count = rs.getInt("COUNT(*)");
+			}
+			return count;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
 		}
-		return count;
-	} catch (Exception e) {
-		throw new RuntimeException(e.getMessage(), e);
 	}
-}
+
+	public static int getTrainersCount() {
+		try (Connection conn = getConnection();
+				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) user " + "WHERE fk_role_id = 2");) {
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			if (rs.next()) {
+				count = rs.getInt("COUNT(*)");
+			}
+			return count;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
 
 //	public static Token createToken(User user) {
 //		try (Connection conn = getConnection();
@@ -173,7 +184,7 @@ public class DatabaseHelper {
 //			throw new RuntimeException(e.getMessage(), e);
 //		}
 //	}
-	
+
 //	public static void removeArea(int trainerId, int areaId) {
 //		try (Connection conn = getConnection();
 //				PreparedStatement ps = conn.prepareStatement(
@@ -197,5 +208,5 @@ public class DatabaseHelper {
 //			throw new RuntimeException(e.getMessage(), e);
 //		}
 //	}
-	
+
 }

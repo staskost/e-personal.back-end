@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.msg.msg.database.DatabaseHelper;
 import com.msg.msg.entities.Area;
+import com.msg.msg.entities.Result;
 import com.msg.msg.entities.Role;
 import com.msg.msg.entities.Token;
 import com.msg.msg.entities.TrainingType;
@@ -80,8 +82,11 @@ public class UserController {
 	}
 
 	@GetMapping("all-trainers")
-	public List<User> getAllTrainers(@RequestBody Role role) {
-		return userRepository.findByRole(role);
+	public Result<User> getAllTrainers(@RequestBody Role role, @RequestParam int start, @RequestParam int end) {
+		Result.validateIndexes(start, end);
+		int count = DatabaseHelper.getTrainersCount();
+		List<User> trainers = userRepository.findByRole(role, PageRequest.of(start, end));
+		return new Result<User>(count, trainers);
 	}
 
 	@GetMapping("trainer-type/{idtraining_type}")
@@ -97,11 +102,6 @@ public class UserController {
 		TrainingType.validateTrainingType(trainingType);
 		return userRepository.findByTrainerTypesAndPriceLessThanEqual(trainingType, price);
 	}
-
-//	@GetMapping("trainer-price/{price}")
-//	public List<User> getTrainerByPrice(@PathVariable double price) {
-//		return userRepository.findTrainerByPrice(price);
-//	}
 
 	@PostMapping("set-price/{iduser}/{price}")
 	public void setPrice(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser,
@@ -129,7 +129,7 @@ public class UserController {
 		trainingTypeRepository.addType(fk_trainer_id, fk_training_type);
 	}
 
-	@PostMapping("trainer-remove-area/{fk_trainer_id}/{fk_area_id}")// maybe
+	@PostMapping("trainer-remove-area/{fk_trainer_id}/{fk_area_id}") // maybe
 	public void removeArea(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_trainer_id,
 			@PathVariable int fk_area_id) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
@@ -145,7 +145,7 @@ public class UserController {
 		trainingTypeRepository.removeType(fk_trainer_id, fk_training_type);
 	}
 
-	@PostMapping("/addAreas/{userId}")// maybe
+	@PostMapping("/addAreas/{userId}") // maybe
 	public void addAreas(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int userId,
 			@RequestBody List<Area> areas) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
@@ -155,7 +155,7 @@ public class UserController {
 		}
 	}
 
-	@PostMapping("/addTrainingTypes/{userId}")// maybe
+	@PostMapping("/addTrainingTypes/{userId}") // maybe
 	public void addTrainingTypes(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int userId,
 			@RequestBody List<TrainingType> types) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);

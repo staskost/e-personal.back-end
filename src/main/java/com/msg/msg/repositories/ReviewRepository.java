@@ -14,7 +14,10 @@ public interface ReviewRepository extends JpaRepository<Review, Integer>{
 
 	Review findBySession(TrainingSession trainingSession);
 	
-	@Query(value = "SELECT review.id, review.fk_session_id, review.comment, review.date, review.rating FROM review,training_session,user "
-			+ "WHERE review.fk_session_id = idtraining_session AND training_session.fk_trainer_id = user.iduser AND user.iduser = ?1 LIMIT ?2,?3", nativeQuery = true)
+	@Query(value = "SELECT review.id, review.fk_session_id, review.comment, review.date, review.rating "
+			+ "FROM review,training_session,user "
+			+ "WHERE review.fk_session_id = idtraining_session "
+			+ "AND training_session.fk_trainer_id = user.iduser "
+			+ "AND user.iduser = ?1 LIMIT ?2,?3", nativeQuery = true)
 	List<Review> getTrainerComments(int fk_trainer_id, int index1, int index2);
 }

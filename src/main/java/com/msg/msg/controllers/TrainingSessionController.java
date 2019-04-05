@@ -157,11 +157,11 @@ public class TrainingSessionController {
 		return reviewRepository.findBySession(trainingSession);
 	}
 
-	@GetMapping("/review-trainer/{fk_trainer_id}")
-	public Result<Review> getTrainerReview(@PathVariable int fk_trainer_id, @RequestParam int index1,
-			@RequestParam int index2) {
-		Result.validateIndexes(index1, index2);
-		List<Review> reviews = reviewRepository.getTrainerComments(fk_trainer_id, index1, index2);
+	@GetMapping("/reviews-trainer/{fk_trainer_id}")
+	public Result<Review> getTrainerReview(@PathVariable int fk_trainer_id, @RequestParam int start,
+			@RequestParam int end) {
+		Result.validateIndexes(start, end);
+		List<Review> reviews = reviewRepository.getTrainerComments(fk_trainer_id, start, end);
 		int count = DatabaseHelper.getTrainersReviews(fk_trainer_id);
 		return new Result<Review>(count, reviews);
 	}
