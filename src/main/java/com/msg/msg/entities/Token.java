@@ -72,12 +72,6 @@ public class Token {
 		this.date_of_creation = date_of_creation;
 	}
 
-	public static void validateToken(Token token) {
-		if (token == null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
-		}
-	}
-
 	@Override
 	public String toString() {
 		return "Token [token_id=" + token_id + ", alphanumeric=" + alphanumeric + ", user=" + user

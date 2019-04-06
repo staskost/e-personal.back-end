@@ -48,7 +48,6 @@ public class TrainingSession {
 	@Column(name = "is_canceled")
 	private int cancelationStatus;
 
-
 	public TrainingSession() {
 	}
 
@@ -131,12 +130,6 @@ public class TrainingSession {
 
 	public void setCancelationStatus(int cancelationStatus) {
 		this.cancelationStatus = cancelationStatus;
-	}
-
-	public static void validateTrainingSession(TrainingSession trainingSession) {
-		if (trainingSession == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Training Session Not Found");
-		}
 	}
 
 	@Override

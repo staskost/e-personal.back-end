@@ -34,7 +34,7 @@ public class TrainingType {
 	@JoinColumn(name = "fk_training_type", referencedColumnName = "idtraining_type")
 	@JsonIgnore
 	private List<TrainingSession> trainerSessions;
-	
+
 	@ManyToMany(mappedBy = "trainerTypes")
 	List<User> trainers;
 
@@ -61,12 +61,6 @@ public class TrainingType {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public static void validateTrainingType(TrainingType trainingType) {
-		if (trainingType == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Training Type Not Found");
-		}
 	}
 
 	@Override

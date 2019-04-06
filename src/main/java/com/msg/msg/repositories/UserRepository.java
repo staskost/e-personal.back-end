@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	List<User> findByTrainerAreasAndTrainerTypes(Area area, TrainingType trainingType);
 
-	List<User> findByTrainerAreasAndTrainerTypes(Area area, TrainingType trainingType, Pageable pageable);
+	List<User> findByTrainerAreasAndTrainerTypes(Area area, TrainingType trainingType, Pageable pageable);//not used
 
 	List<User> findByTrainerAreasAndTrainerTypesAndPriceLessThanEqual(Area area, TrainingType trainingType,
 			double price);
@@ -40,7 +40,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	List<User> findByPriceGreaterThanAndPriceLessThanEqual(double minPrice, double maxPrice);
 
 	List<User> findByTrainerTypesAndPriceLessThanEqual(TrainingType trainingType, double price);
+	
+	List<User> findByRole(Role role);
 
-	List<User> findByRole(Role role, Pageable pageable);
+	List<User> findByRole(Role role, Pageable pageable);//not used
 
 }

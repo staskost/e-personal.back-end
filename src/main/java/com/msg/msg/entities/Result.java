@@ -35,12 +35,6 @@ public class Result<T> {
 		this.results = results;
 	}
 
-	public static void validateIndexes(int start, int end) {
-		if ((start < 0) || (end < 0) || (end - start > 50) || (end - start > 50)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid index");
-		}
-	}
-
 	@Override
 	public String toString() {
 		return "Result [count=" + count + ", results=" + results + "]";

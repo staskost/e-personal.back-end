@@ -13,6 +13,7 @@ import com.msg.msg.entities.TrainingType;
 import com.msg.msg.entities.User;
 import com.msg.msg.repositories.TrainingTypeRepository;
 import com.msg.msg.repositories.UserRepository;
+import com.msg.msg.validation.Validations;
 
 @RestController
 @RequestMapping("/types")
@@ -34,7 +35,7 @@ public class TrainingTypeController {
 	@GetMapping("/trainer-types/{iduser}")
 	public List<TrainingType> getTrainersTypes(@PathVariable int iduser) {
 		User user = userRepository.findById(iduser);
-		User.validateUser(user);
+		Validations.validateUser(user);
 		return trainingTypeRepository.findByTrainers(user);
 	}
 

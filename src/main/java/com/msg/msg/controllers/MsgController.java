@@ -22,6 +22,7 @@ import com.msg.msg.entities.User;
 import com.msg.msg.repositories.MessageRepository;
 import com.msg.msg.repositories.TokenRepository;
 import com.msg.msg.repositories.UserRepository;
+import com.msg.msg.validation.Validations;
 
 @RestController
 @RequestMapping("/messages")
@@ -39,26 +40,24 @@ public class MsgController {
 
 	@GetMapping("/sent")
 	public Result<Message> getSentMessages(@RequestHeader(value ="X-MSG-AUTH") String alphanumeric,
-			@RequestParam int start, @RequestParam int end) {
+			@RequestParam int start, @RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
-		Result.validateIndexes(start, end);
+		Validations.validateToken(token);
+		Validations.validateIndexes(start, size);
 		int senderId = token.getUser().getId();
-		User sender = userRepository.findById(senderId);
-		List<Message> msgs = messageRepository.findBySenderOrderByDateDesc(sender, PageRequest.of(start, end));
+		List<Message> msgs = messageRepository.findSentMessages(senderId, start, size);
 		int count = DatabaseHelper.getSentMsgCount(senderId);
 		return new Result<Message>(count, msgs);
 	}
 
 	@GetMapping("/inbox")
 	public Result<Message> getInboxMessages(@RequestHeader(value ="X-MSG-AUTH") String alphanumeric,
-			@RequestParam int start, @RequestParam int end) {
+			@RequestParam int start, @RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
-		Result.validateIndexes(start, end);
+		Validations.validateToken(token);
+		Validations.validateIndexes(start, size);
 		int receiverId = token.getUser().getId();
-		User receiver = userRepository.findById(receiverId);
-		List<Message> msgs = messageRepository.findByReceiverOrderByDateDesc(receiver, PageRequest.of(start, end));
+		List<Message> msgs = messageRepository.findInboxMessages(receiverId, start, size);
 		int count = DatabaseHelper.getInboxMsgCount(receiverId);
 		return new Result<Message>(count, msgs);
 	}
@@ -66,15 +65,16 @@ public class MsgController {
 	@GetMapping("/UsersMsg/{trainerUsername}/{clientUsername}")
 	public Result<Message> getUserMessages(@RequestHeader(value ="X-MSG-AUTH") String alphanumeric,
 			@PathVariable String trainerUsername, @PathVariable String clientUsername, @RequestParam int start,
-			@RequestParam int end) {
+			@RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
-		Result.validateIndexes(start, end);
+		Validations.validateToken(token);
+		Validations.validateIndexes(start, size);
 		User trainer = userRepository.findByUsername(trainerUsername);
-		User.validateUser(trainer);
+		Validations.validateUser(trainer);
 		User client = userRepository.findByUsername(clientUsername);
-		User.validateUser(client);
-		List<Message> msgs = messageRepository.findBySenderAndReceiverOrReceiverAndSenderOrderByDateDesc(trainer, client, client, trainer, PageRequest.of(start, end));
+		Validations.validateUser(client);
+		List<Message> msgs = messageRepository.findUserMessages(client.getId(), trainer.getId(), trainer.getId(),
+				client.getId(), start, size);
 		int count = DatabaseHelper.getUsersMsgCount(trainer.getId(), client.getId());
 		return new Result<Message>(count, msgs);
 	}
@@ -83,11 +83,11 @@ public class MsgController {
 	public void sendMessage(@RequestHeader(value ="X-MSG-AUTH") String alphanumeric,
 			@PathVariable String receiverUsername, @RequestBody String content) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int senderId = token.getUser().getId();
 		User sender = userRepository.findById(senderId);
 		User receiver = userRepository.findByUsername(receiverUsername);
-		User.validateUser(receiver);
+		Validations.validateUser(receiver);
 		Message message = new Message(sender, receiver, content);
 		messageRepository.save(message);
 	}

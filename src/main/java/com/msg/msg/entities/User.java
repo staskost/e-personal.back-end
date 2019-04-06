@@ -270,12 +270,6 @@ public class User {
 //		this.trainerAreas = trainerAreas;
 //	}
 
-	public static void validateUser(User user) {
-		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found");
-		}
-	}
-
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", role=" + role + ", firstName=" + firstName

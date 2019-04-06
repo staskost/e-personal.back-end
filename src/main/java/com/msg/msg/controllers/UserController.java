@@ -3,7 +3,6 @@ package com.msg.msg.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,12 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.msg.msg.database.DatabaseHelper;
 import com.msg.msg.entities.Area;
-import com.msg.msg.entities.Result;
 import com.msg.msg.entities.Role;
 import com.msg.msg.entities.Token;
 import com.msg.msg.entities.TrainingType;
@@ -25,6 +21,7 @@ import com.msg.msg.repositories.AreaRepository;
 import com.msg.msg.repositories.TokenRepository;
 import com.msg.msg.repositories.TrainingTypeRepository;
 import com.msg.msg.repositories.UserRepository;
+import com.msg.msg.validation.Validations;
 
 @RestController
 @RequestMapping("/find")
@@ -46,9 +43,9 @@ public class UserController {
 	@GetMapping("/trainer/{idtraining_type}/{idarea}")
 	public List<User> getYourTrainer(@PathVariable int idtraining_type, @PathVariable int idarea) {
 		TrainingType trainingType = trainingTypeRepository.findById(idtraining_type);
-		TrainingType.validateTrainingType(trainingType);
+		Validations.validateTrainingType(trainingType);
 		Area area = areaRepository.findById(idarea);
-		Area.validateArea(area);
+		Validations.validateArea(area);
 		return userRepository.findByTrainerAreasAndTrainerTypes(area, trainingType);
 	}
 
@@ -56,23 +53,23 @@ public class UserController {
 	public List<User> getYourTrainer(@PathVariable int idarea, @PathVariable int idtraining_type,
 			@PathVariable double price) {
 		Area area = areaRepository.findById(idarea);
-		Area.validateArea(area);
+		Validations.validateArea(area);
 		TrainingType trainingType = trainingTypeRepository.findById(idtraining_type);
-		TrainingType.validateTrainingType(trainingType);
+		Validations.validateTrainingType(trainingType);
 		return userRepository.findByTrainerAreasAndTrainerTypesAndPriceLessThanEqual(area, trainingType, price);
 	}
 
 	@GetMapping("trainers-area/{idarea}")
 	public List<User> getTrainerByArea(@PathVariable int idarea) {
 		Area area = areaRepository.findById(idarea);
-		Area.validateArea(area);
+		Validations.validateArea(area);
 		return userRepository.findByTrainerAreas(area);
 	}
 
 	@GetMapping("trainer-area-price/{idarea}/{price}")
 	public List<User> getTrainerByAreaAndPrice(@PathVariable int idarea, @PathVariable double price) {
 		Area area = areaRepository.findById(idarea);
-		Area.validateArea(area);
+		Validations.validateArea(area);
 		return userRepository.findByTrainerAreasAndPriceLessThanEqual(area, price);
 	}
 
@@ -82,24 +79,22 @@ public class UserController {
 	}
 
 	@GetMapping("all-trainers")
-	public Result<User> getAllTrainers(@RequestBody Role role, @RequestParam int start, @RequestParam int end) {
-		Result.validateIndexes(start, end);
-		int count = DatabaseHelper.getTrainersCount();
-		List<User> trainers = userRepository.findByRole(role, PageRequest.of(start, end));
-		return new Result<User>(count, trainers);
+	public List<User> getAllTrainers(@RequestBody Role role) {
+		Validations.validateRole(role);
+		return userRepository.findByRole(role);
 	}
 
 	@GetMapping("trainer-type/{idtraining_type}")
 	public List<User> getTrainerByType(@PathVariable int idtraining_type) {
 		TrainingType trainingType = trainingTypeRepository.findById(idtraining_type);
-		TrainingType.validateTrainingType(trainingType);
+		Validations.validateTrainingType(trainingType);
 		return userRepository.findByTrainerTypes(trainingType);
 	}
 
 	@GetMapping("trainer-type-price/{idtraining_type}/{price}")
 	public List<User> getTrainerByTypeAndPrice(@PathVariable int idtraining_type, @PathVariable double price) {
 		TrainingType trainingType = trainingTypeRepository.findById(idtraining_type);
-		TrainingType.validateTrainingType(trainingType);
+		Validations.validateTrainingType(trainingType);
 		return userRepository.findByTrainerTypesAndPriceLessThanEqual(trainingType, price);
 	}
 
@@ -107,7 +102,7 @@ public class UserController {
 	public void setPrice(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser,
 			@PathVariable double price) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		User user = userRepository.findById(iduser);
 		user.setPrice(price);
 		userRepository.save(user);
@@ -117,7 +112,7 @@ public class UserController {
 	public void chooseArea(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_trainer_id,
 			@PathVariable int fk_area_id) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		areaRepository.addArea(fk_trainer_id, fk_area_id);
 	}
 
@@ -125,7 +120,7 @@ public class UserController {
 	public void trainerSpecialization(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int fk_trainer_id, @PathVariable int fk_training_type) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		trainingTypeRepository.addType(fk_trainer_id, fk_training_type);
 	}
 
@@ -133,7 +128,7 @@ public class UserController {
 	public void removeArea(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_trainer_id,
 			@PathVariable int fk_area_id) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		areaRepository.removeArea(fk_trainer_id, fk_area_id);
 	}
 
@@ -141,7 +136,7 @@ public class UserController {
 	public void removeType(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_trainer_id,
 			@PathVariable int fk_training_type) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		trainingTypeRepository.removeType(fk_trainer_id, fk_training_type);
 	}
 
@@ -149,7 +144,7 @@ public class UserController {
 	public void addAreas(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int userId,
 			@RequestBody List<Area> areas) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		for (Area area : areas) {
 			areaRepository.addArea(userId, area.getId());
 		}
@@ -159,9 +154,9 @@ public class UserController {
 	public void addTrainingTypes(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int userId,
 			@RequestBody List<TrainingType> types) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		User user = userRepository.findById(userId);
-		User.validateUser(user);
+		Validations.validateUser(user);
 		List<TrainingType> TrainingTypesThatTrainerHas = trainingTypeRepository.findByTrainers(user);
 		for (TrainingType type : TrainingTypesThatTrainerHas) {
 			trainingTypeRepository.removeType(userId, type.getId());
@@ -174,9 +169,9 @@ public class UserController {
 	@PostMapping("bann-user/{iduser}")
 	public void bannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		User user = userRepository.findById(iduser);
-		User.validateUser(user);
+		Validations.validateUser(user);
 		user.setActiveStatus(0);
 		userRepository.save(user);
 	}
@@ -184,9 +179,9 @@ public class UserController {
 	@PostMapping("unbann-user/{iduser}")
 	public void unBannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		User user = userRepository.findById(iduser);
-		User.validateUser(user);
+		Validations.validateUser(user);
 		user.setActiveStatus(1);
 		userRepository.save(user);
 	}

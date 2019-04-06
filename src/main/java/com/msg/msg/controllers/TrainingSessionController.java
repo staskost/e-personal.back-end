@@ -27,6 +27,7 @@ import com.msg.msg.repositories.TokenRepository;
 import com.msg.msg.repositories.TrainingSessionRepository;
 import com.msg.msg.repositories.TrainingTypeRepository;
 import com.msg.msg.repositories.UserRepository;
+import com.msg.msg.validation.Validations;
 
 @RestController
 @RequestMapping("/session")
@@ -54,7 +55,7 @@ public class TrainingSessionController {
 	@GetMapping("/trainer-sessions")
 	public List<TrainingSession> getTrainersSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int id = token.getUser().getId();
 		User trainer = userRepository.findById(id);
 		return trainingSessionRepository.findByTrainerAndCancelationStatusOrderByDateDesc(trainer, 0);
@@ -64,7 +65,7 @@ public class TrainingSessionController {
 	public List<TrainingSession> getTrainersSessionsByDate(@RequestHeader("X-MSG-AUTH") String alphanumeric,
 			@PathVariable String date) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int id = token.getUser().getId();
 		User trainer = userRepository.findById(id);
 		return trainingSessionRepository.findByTrainerAndCancelationStatusAndDate(trainer, 0, date);
@@ -73,7 +74,7 @@ public class TrainingSessionController {
 	@GetMapping("/client-sessions")
 	public List<TrainingSession> getClientSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int id = token.getUser().getId();
 		User client = userRepository.findById(id);
 		return trainingSessionRepository.findByClientAndCancelationStatusOrderByDateDesc(client, 0);
@@ -83,7 +84,7 @@ public class TrainingSessionController {
 	public List<TrainingSession> getCientssSessionsByDate(@RequestHeader("X-MSG-AUTH") String alphanumeric,
 			@PathVariable String date) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int id = token.getUser().getId();
 		User client = userRepository.findById(id);
 		return trainingSessionRepository.findByClientAndCancelationStatusAndDate(client, 0, date);
@@ -94,15 +95,15 @@ public class TrainingSessionController {
 			@PathVariable int idtraining_type, @PathVariable int idarea, @PathVariable String date,
 			@PathVariable String time) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int id = token.getUser().getId();
 		User client = userRepository.findById(id);
 		User trainer = userRepository.findById(fk_trainer_id);
-		User.validateUser(trainer);
+		Validations.validateUser(trainer);
 		Area area = areaRepository.findById(idarea);
-		Area.validateArea(area);
+		Validations.validateArea(area);
 		TrainingType trainingType = trainingTypeRepository.findById(idtraining_type);
-		TrainingType.validateTrainingType(trainingType);
+		Validations.validateTrainingType(trainingType);
 		TrainingSession trainingSession = new TrainingSession(client, trainer, area, trainingType, date, time);
 		trainingSessionRepository.save(trainingSession);
 
@@ -112,9 +113,9 @@ public class TrainingSessionController {
 	public void cancelSession(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int idtraining_session) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		TrainingSession trainingSession = trainingSessionRepository.findById(idtraining_session);
-		TrainingSession.validateTrainingSession(trainingSession);
+		Validations.validateTrainingSession(trainingSession);
 		trainingSession.setCancelationStatus(1);
 		trainingSessionRepository.save(trainingSession);
 	}
@@ -123,7 +124,7 @@ public class TrainingSessionController {
 	public List<TrainingSession> notifyForUnreadSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int fk_trainer_id) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int id = token.getUser().getId();
 		User trainer = userRepository.findById(id);
 		return trainingSessionRepository.findByTrainerAndNotificationStatus(trainer, 0);
@@ -133,9 +134,9 @@ public class TrainingSessionController {
 	public void notified(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int idtraining_session) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		TrainingSession trainingSession = trainingSessionRepository.findById(idtraining_session);
-		TrainingSession.validateTrainingSession(trainingSession);
+		Validations.validateTrainingSession(trainingSession);
 		trainingSession.setNotificationStatus(1);
 		trainingSessionRepository.save(trainingSession);
 	}
@@ -144,7 +145,7 @@ public class TrainingSessionController {
 	public List<TrainingSession> getCanceledSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int fk_trainer_id) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int id = token.getUser().getId();
 		User trainer = userRepository.findById(id);
 		return trainingSessionRepository.findByTrainerAndCancelationStatus(trainer, 1);
@@ -153,14 +154,14 @@ public class TrainingSessionController {
 	@GetMapping("/review/{idtraining_session}")
 	public Review getSessionReview(@PathVariable int idtraining_session) {
 		TrainingSession trainingSession =trainingSessionRepository.findById(idtraining_session);
-		TrainingSession.validateTrainingSession(trainingSession);
+		Validations.validateTrainingSession(trainingSession);
 		return reviewRepository.findBySession(trainingSession);
 	}
 
 	@GetMapping("/reviews-trainer/{fk_trainer_id}")
 	public Result<Review> getTrainerReview(@PathVariable int fk_trainer_id, @RequestParam int start,
 			@RequestParam int end) {
-		Result.validateIndexes(start, end);
+		Validations.validateIndexes(start, end);
 		List<Review> reviews = reviewRepository.getTrainerComments(fk_trainer_id, start, end);
 		int count = DatabaseHelper.getTrainersReviews(fk_trainer_id);
 		return new Result<Review>(count, reviews);
@@ -170,9 +171,9 @@ public class TrainingSessionController {
 	public void reviewSession(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int idtraining_session, @PathVariable int rating, @RequestBody String comment) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		TrainingSession trainingSession = trainingSessionRepository.findById(idtraining_session);
-		TrainingSession.validateTrainingSession(trainingSession);
+		Validations.validateTrainingSession(trainingSession);
 		Review review = new Review(trainingSession, comment, rating);
 		reviewRepository.save(review);
 

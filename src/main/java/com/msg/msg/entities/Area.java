@@ -78,12 +78,6 @@ public class Area {
 		this.trainers = trainers;
 	}
 
-	public static void validateArea(Area area) {
-		if (area == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Area Not Found");
-		}
-	}
-
 //	@Override
 //	public String toString() {
 //		return "Area [id=" + id + ", city=" + city + ", address=" + address + ", areaSessions=" + areaSessions + "]";

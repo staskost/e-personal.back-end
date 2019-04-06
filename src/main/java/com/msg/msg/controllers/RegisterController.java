@@ -21,6 +21,7 @@ import com.msg.msg.entities.User;
 import com.msg.msg.mail.MailService;
 import com.msg.msg.repositories.TokenRepository;
 import com.msg.msg.repositories.UserRepository;
+import com.msg.msg.validation.Validations;
 
 @RestController
 @RequestMapping("/register")
@@ -59,7 +60,7 @@ public class RegisterController {
 	@PutMapping("/update")
 	public void updateUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestBody User user) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Token.validateToken(token);
+		Validations.validateToken(token);
 		int id = token.getUser().getId();
 		User user2 = userRepository.findById(id);
 		User user3 = userRepository.findByEmail(user.getEmail());
@@ -82,7 +83,7 @@ public class RegisterController {
 	@PostMapping("/confirmed/{iduser}")
 	public void enableAcount(@PathVariable int iduser) {
 		User user = userRepository.findById(iduser);
-		User.validateUser(user);
+		Validations.validateUser(user);
 		user.setActiveStatus(1);
 		userRepository.save(user);
 	}
