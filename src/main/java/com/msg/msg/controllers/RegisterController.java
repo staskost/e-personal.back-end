@@ -49,7 +49,7 @@ public class RegisterController {
 			String sha256hex = DigestUtils.sha256Hex(password + random);
 			user.setPassword(sha256hex);
 			userRepository.save(user);
-//			mailService.sendMail(user);
+			mailService.sendMail(user);
 		} else if ((user2 != null) && (user3 == null)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username Already Exists");
 		} else if ((user2 == null) && (user3 != null)) {
@@ -57,7 +57,7 @@ public class RegisterController {
 		}
 	}
 
-	@PutMapping("/update")
+	@PutMapping("/update")//not used
 	public void updateUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestBody User user) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
@@ -74,18 +74,19 @@ public class RegisterController {
 				String sha256hex = DigestUtils.sha256Hex(password + random);
 				user.setPassword(sha256hex);
 				userRepository.save(user);
+				
 			}
 		} else {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Already Exists");
 		}
 	}
 
-	@PostMapping("/confirmed/{iduser}")
-	public void enableAcount(@PathVariable int iduser) {
-		User user = userRepository.findById(iduser);
-		Validations.validateUser(user);
-		user.setActiveStatus(1);
-		userRepository.save(user);
-	}
+//	@PostMapping("/confirmed/{iduser}")
+//	public void enableAcount(@PathVariable int iduser) {
+//		User user = userRepository.findById(iduser);
+//		Validations.validateUser(user);
+//		user.setActiveStatus(1);
+//		userRepository.save(user);
+//	}
 
 }

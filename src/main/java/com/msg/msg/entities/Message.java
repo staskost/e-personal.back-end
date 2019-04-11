@@ -33,6 +33,9 @@ public class Message {
 
 	@Column(name = "time_sent")
 	private Date date;
+	
+	@Column(name = "is_read")
+	private int isRead;
 
 	public Message() {
 	}
@@ -82,6 +85,14 @@ public class Message {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public int getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(int isRead) {
+		this.isRead = isRead;
 	}
 
 	@Override

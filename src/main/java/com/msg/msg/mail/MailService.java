@@ -20,8 +20,8 @@ public class MailService {
 	
 	public void sendMail(User user) throws MailException{
 		SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setTo(user.getEmail());
-		mail.setFrom("our mail");
+		mail.setFrom("info.healthbeat@gmail.com");
+		mail.setTo(user.getEmail());		
 		mail.setSubject("Confirm registration");
 		mail.setText("Enable your account through this link <a href=\" + temp + \">Click here</a>");
 		javaMailSender.send(mail);

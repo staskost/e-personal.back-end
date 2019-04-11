@@ -47,6 +47,9 @@ public class TrainingSession {
 
 	@Column(name = "is_canceled")
 	private int cancelationStatus;
+	
+	@Column(name = "is_canceled_read")
+	private int readCancelationStatus;
 
 	public TrainingSession() {
 	}
@@ -130,6 +133,14 @@ public class TrainingSession {
 
 	public void setCancelationStatus(int cancelationStatus) {
 		this.cancelationStatus = cancelationStatus;
+	}
+	
+	public int getReadCancelationStatus() {
+		return readCancelationStatus;
+	}
+
+	public void setReadCancelationStatus(int readCancelationStatus) {
+		this.readCancelationStatus = readCancelationStatus;
 	}
 
 	@Override

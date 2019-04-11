@@ -1,7 +1,6 @@
 package com.msg.msg.entities;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,9 +13,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -57,8 +53,8 @@ public class User {
 	@Column(name = "photo_link")
 	private String photoLink;
 
-	@Column(name = "is_active")
-	private int activeStatus;
+	@Column(name = "is_banned")
+	private int bannedStatus;
 
 	@Column(name = "random_num")
 	private String randomNum;
@@ -89,30 +85,14 @@ public class User {
 
 	@ManyToMany
 	@JoinTable(name = "trainer_area", joinColumns = @JoinColumn(name = "fk_trainer_id"), inverseJoinColumns = @JoinColumn(name = "fk_area_id"))
-	@JsonIgnore
 	List<Area> trainerAreas;
 
 	@ManyToMany
 	@JoinTable(name = "trainer_specialization", joinColumns = @JoinColumn(name = "fk_trainer_id"), inverseJoinColumns = @JoinColumn(name = "fk_training_type"))
-	@JsonIgnore
 	List<TrainingType> trainerTypes;
 
 	public User() {
 	}
-
-//	public User(int id, String username, String password, Role role, String firstName, String lastName, String email,
-//			double price, String description, String photoLink) {
-//		this.id = id;
-//		this.username = username;
-//		this.password = password;
-//		this.role = role;
-//		this.firstName = firstName;
-//		this.lastName = lastName;
-//		this.email = email;
-//		this.price = price;
-//		this.description = description;
-//		this.photoLink = photoLink;
-//	}
 
 	public User(String username, String password, Role role, String firstName, String lastName, String email,
 			double price, String description) {
@@ -206,12 +186,12 @@ public class User {
 		this.photoLink = photoLink;
 	}
 
-	public int getActiveStatus() {
-		return activeStatus;
+	public int getBannedStatus() {
+		return bannedStatus;
 	}
 
-	public void setActiveStatus(int activeStatus) {
-		this.activeStatus = activeStatus;
+	public void setBannedStatus(int activeStatus) {
+		this.bannedStatus = activeStatus;
 	}
 
 	public String getRandomNum() {
@@ -262,13 +242,38 @@ public class User {
 //		this.tokens = tokens;
 //	}
 //
-//	public List<Area> getTrainerAreas() {
-//		return trainerAreas;
-//	}
-//
-//	public void setTrainerAreas(List<Area> trainerAreas) {
-//		this.trainerAreas = trainerAreas;
-//	}
+
+	public List<TrainingType> getTrainerTypes() {
+		return trainerTypes;
+	}
+
+	public void setTrainerTypes(List<TrainingType> trainerTypes) {
+		this.trainerTypes = trainerTypes;
+	}
+
+	public List<Area> getTrainerAreas() {
+		return trainerAreas;
+	}
+
+	public void setTrainerAreas(List<Area> trainerAreas) {
+		this.trainerAreas = trainerAreas;
+	}
+
+	public void addTrainingArea(Area area) {
+		this.trainerAreas.add(area);
+	}
+
+	public void removeTrainingArea(Area area) {
+		this.trainerAreas.remove(area);
+	}
+
+	public void addTrainingType(TrainingType trainingType) {
+		this.trainerTypes.add(trainingType);
+	}
+
+	public void removeTrainingType(TrainingType trainingType) {
+		this.trainerTypes.remove(trainingType);
+	}
 
 	@Override
 	public String toString() {

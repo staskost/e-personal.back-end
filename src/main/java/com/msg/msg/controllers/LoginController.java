@@ -39,10 +39,14 @@ public class LoginController {
 		String sha256hex = DigestUtils.sha256Hex(password + random);
 		User user = userRepository.findByUsernameAndPassword(username, sha256hex);
 		if (user != null) {
-			String alphanumeric = UUID.randomUUID().toString();
-			Token token = new Token(alphanumeric, user);
-			tokenRepository.save(token);
-			return token;
+			if (user.getBannedStatus() == 0) {
+				String alphanumeric = UUID.randomUUID().toString();
+				Token token = new Token(alphanumeric, user);
+				tokenRepository.save(token);
+				return token;
+			} else {
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are Banned");
+			}
 		} else {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Username/Password");
 		}

@@ -36,6 +36,7 @@ public class Area {
 	private List<TrainingSession> areaSessions;
 
 	@ManyToMany(mappedBy = "trainerAreas")
+	@JsonIgnore
 	List<User> trainers;
 
 	public Area() {

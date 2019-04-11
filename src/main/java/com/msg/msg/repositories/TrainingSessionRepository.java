@@ -22,6 +22,10 @@ public interface TrainingSessionRepository extends JpaRepository<TrainingSession
 	List<TrainingSession> findByTrainerAndCancelationStatus(User trainer, int status);
 
 	List<TrainingSession> findByTrainerAndNotificationStatus(User trainer, int status);
+	
+	List<TrainingSession> findByTrainerAndCancelationStatusAndReadCancelationStatus(User trainer, int status, int status2);
+	
+	List<TrainingSession> findByClientAndCancelationStatusAndReadCancelationStatus(User client, int status, int status2);
 
 	TrainingSession findById(int id);
 }
