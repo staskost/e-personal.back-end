@@ -10,18 +10,18 @@ import com.msg.msg.entities.User;
 
 @Service
 public class MailService {
-	
+
 	private JavaMailSender javaMailSender;
 
 	@Autowired
 	public MailService(JavaMailSender javaMailSender) {
 		this.javaMailSender = javaMailSender;
 	}
-	
-	public void sendMail(User user) throws MailException{
+
+	public void sendMail(User user) throws MailException {
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setFrom("info.healthbeat@gmail.com");
-		mail.setTo(user.getEmail());		
+		mail.setTo(user.getEmail());
 		mail.setSubject("Confirm registration");
 		mail.setText("Enable your account through this link <a href=\" + temp + \">Click here</a>");
 		javaMailSender.send(mail);

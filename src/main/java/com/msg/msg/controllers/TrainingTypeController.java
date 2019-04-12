@@ -19,19 +19,18 @@ import com.msg.msg.validation.Validations;
 @RequestMapping("/types")
 @CrossOrigin(origins = "*")
 public class TrainingTypeController {
-	
-	
+
 	@Autowired
 	public TrainingTypeRepository trainingTypeRepository;
-	
+
 	@Autowired
 	public UserRepository userRepository;
-	
+
 	@GetMapping("/all")
-	public List<TrainingType> getAllTypes(){
+	public List<TrainingType> getAllTypes() {
 		return trainingTypeRepository.findAll();
 	}
-	
+
 	@GetMapping("/trainer-types/{iduser}")
 	public List<TrainingType> getTrainersTypes(@PathVariable int iduser) {
 		User user = userRepository.findById(iduser);

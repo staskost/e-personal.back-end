@@ -21,10 +21,10 @@ public class Role {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-	
+
 	@Column(name = "role_name")
 	private String name;
-	
+
 	@OneToMany
 	@JoinColumn(name = "fk_role_id", referencedColumnName = "id")
 	@JsonIgnore
@@ -37,7 +37,7 @@ public class Role {
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	public Role(String name) {
 		this.name = name;
 	}
@@ -58,7 +58,6 @@ public class Role {
 		this.name = name;
 	}
 
-
 	public List<User> getUsers() {
 		return users;
 	}
@@ -67,11 +66,9 @@ public class Role {
 		this.users = users;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Role [id=" + id + ", name=" + name + "]";
 	}
-	
-	
+
 }

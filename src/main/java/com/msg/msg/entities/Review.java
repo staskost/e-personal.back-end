@@ -2,7 +2,6 @@ package com.msg.msg.entities;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +29,7 @@ public class Review {
 
 	@Column(name = "date")
 	private Date date;// borei na ginei String
-	
+
 	@Column(name = "rating")
 	private int rating;
 
@@ -89,7 +88,5 @@ public class Review {
 		return "Review [id=" + id + ", session=" + session + ", comment=" + comment + ", date=" + date + ", rating="
 				+ rating + "]";
 	}
-
-
 
 }

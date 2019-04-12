@@ -9,12 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 @Entity
 @Table(name = "training_session")
 public class TrainingSession {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idtraining_session")
@@ -47,7 +45,7 @@ public class TrainingSession {
 
 	@Column(name = "is_canceled")
 	private int cancelationStatus;
-	
+
 	@Column(name = "is_canceled_read")
 	private int readCancelationStatus;
 
@@ -134,7 +132,7 @@ public class TrainingSession {
 	public void setCancelationStatus(int cancelationStatus) {
 		this.cancelationStatus = cancelationStatus;
 	}
-	
+
 	public int getReadCancelationStatus() {
 		return readCancelationStatus;
 	}

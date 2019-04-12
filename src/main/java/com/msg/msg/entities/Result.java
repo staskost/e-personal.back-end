@@ -2,9 +2,6 @@ package com.msg.msg.entities;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 public class Result<T> {
 
 	private int count;

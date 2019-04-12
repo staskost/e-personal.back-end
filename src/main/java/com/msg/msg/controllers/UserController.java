@@ -2,17 +2,21 @@ package com.msg.msg.controllers;
 
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.msg.msg.database.DatabaseHelper;
 import com.msg.msg.entities.Area;
@@ -60,6 +64,7 @@ public class UserController {
 			@RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
+		Validations.validateStartAndSize(start, size);
 		int count = DatabaseHelper.getUsersCount();
 		List<User> users = userRepository.getAllUsers(start, size);
 		return new Result<User>(count, users);
@@ -70,6 +75,7 @@ public class UserController {
 			@RequestParam int page, @RequestParam int size) {
 		TrainingType trainingType = trainingTypeRepository.findById(idtraining_type);
 		Validations.validateTrainingType(trainingType);
+		Validations.validatePageAndSize(page, size);
 		Area area = areaRepository.findById(idarea);
 		Validations.validateArea(area);
 		int count = DatabaseHelper.getTrainersCountByTypeAndArea(idtraining_type, idarea);
@@ -90,6 +96,7 @@ public class UserController {
 
 	@GetMapping("trainers-area/{idarea}")
 	public Result<User> getTrainerByArea(@PathVariable int idarea, @RequestParam int page, @RequestParam int size) {
+		Validations.validatePageAndSize(page, size);
 		Area area = areaRepository.findById(idarea);
 		Validations.validateArea(area);
 		int count = DatabaseHelper.getTrainersCountByArea(idarea);
@@ -111,6 +118,7 @@ public class UserController {
 
 	@GetMapping("all-trainers/{idrole}")
 	public Result<User> getAllTrainers(@PathVariable int idrole, @RequestParam int page, @RequestParam int size) {
+		Validations.validatePageAndSize(page, size);
 		Role role = roleRepository.findById(idrole);
 		Validations.validateRole(role);
 		int count = DatabaseHelper.getTrainersCount();
@@ -121,12 +129,12 @@ public class UserController {
 	@GetMapping("trainer-type/{idtraining_type}")
 	public Result<User> getTrainerByType(@PathVariable int idtraining_type, @RequestParam int page,
 			@RequestParam int size) {
+		Validations.validatePageAndSize(page, size);
 		TrainingType trainingType = trainingTypeRepository.findById(idtraining_type);
 		Validations.validateTrainingType(trainingType);
 		int count = DatabaseHelper.getTrainersCountByType(idtraining_type);
 		List<User> trainers = userRepository.findByTrainerTypes(trainingType, PageRequest.of(page, size));
 		return new Result<User>(count, trainers);
-
 	}
 
 	@GetMapping("trainer-type-price/{idtraining_type}/{price}")
@@ -199,7 +207,6 @@ public class UserController {
 		Validations.validateTrainingType(trainingType);
 		user.removeTrainingType(trainingType);
 		userRepository.save(user);
-
 	}
 
 	@PostMapping("bann-user/{iduser}")
@@ -222,4 +229,27 @@ public class UserController {
 		userRepository.save(user);
 	}
 
+	@PutMapping("/update") // not used
+	public void updateUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestBody User user) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		int id = token.getUser().getId();
+		User user2 = userRepository.findById(id);
+		User user3 = userRepository.findByEmail(user.getEmail());
+		if (user3 == null) {
+			if (user2.retrievePassword().equals(user.retrievePassword())) {
+				userRepository.save(user);
+			} else {
+				String password = user.retrievePassword();
+				String random = user2.getRandomNum();
+				user.setRandomNum(random);
+				String sha256hex = DigestUtils.sha256Hex(password + random);
+				user.setPassword(sha256hex);
+				userRepository.save(user);
+
+			}
+		} else {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Already Exists");
+		}
+	}
 }

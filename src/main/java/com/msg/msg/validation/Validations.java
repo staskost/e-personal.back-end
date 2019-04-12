@@ -12,9 +12,15 @@ import com.msg.msg.entities.User;
 
 public class Validations {
 
-	public static void validateIndexes(int start, int size) {
+	public static void validateStartAndSize(int start, int size) {
 		if ((start < 0) || (size < 0) || (start - size > 50) || (size - start > 50)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid index");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid pagination request");
+		}
+	}
+
+	public static void validatePageAndSize(int page, int size) {
+		if ((page < 0) || (size < 0) || (size > 50)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid pagination request");
 		}
 	}
 
@@ -47,9 +53,9 @@ public class Validations {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found");
 		}
 	}
-	
+
 	public static void validateRole(Role role) {
-		if(role == null) {
+		if (role == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role Not Found");
 		}
 	}

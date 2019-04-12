@@ -17,21 +17,21 @@ import com.msg.msg.repositories.UserRepository;
 @RestController
 @RequestMapping("/areas")
 @CrossOrigin(origins = "*")
-public class AreaController {	
-	
+public class AreaController {
+
 	@Autowired
 	public AreaRepository areaRepository;
-	
+
 	@Autowired
 	public UserRepository userRepository;
-	
+
 	@GetMapping("/all")
-	public List<Area> getAllAreas(){
+	public List<Area> getAllAreas() {
 		return areaRepository.findAll();
 	}
-	
+
 	@GetMapping("/trainer-areas/{iduser}")
-	public List<Area> getTrainersAreas(@PathVariable int iduser) {		
+	public List<Area> getTrainersAreas(@PathVariable int iduser) {
 		User user = userRepository.findById(iduser);
 		return areaRepository.findByTrainers(user);
 	}
