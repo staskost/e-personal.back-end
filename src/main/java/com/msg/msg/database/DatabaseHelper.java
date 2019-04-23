@@ -129,7 +129,7 @@ public class DatabaseHelper {
 	public static int getTrainersCountByTypeAndArea(int typeId, int areaId) {
 		try (Connection conn = getConnection();
 				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(iduser)\r\n"
-						+ " FROM user, trainer_area,  trainer_specialization, area ,training_type\r\n"
+						+ " FROM user, trainer_area, trainer_specialization, area ,training_type\r\n"
 						+ "			WHERE user.iduser=trainer_specialization.fk_trainer_id AND user.iduser=trainer_area.fk_trainer_id AND \r\n"
 						+ "			training_type.idtraining_type=trainer_specialization.fk_training_type AND area.idarea=trainer_area.fk_area_id\r\n"
 						+ "			AND training_type.idtraining_type =? AND idarea =?;");) {
@@ -149,7 +149,7 @@ public class DatabaseHelper {
 	public static int getTrainersCountByArea(int areaId) {
 		try (Connection conn = getConnection();
 				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(iduser)\r\n"
-						+ "+ FROM user,trainer_area,area WHERE iduser=fk_trainer_id AND fk_area_id=idarea AND idarea=?");) {
+						+ " FROM user,trainer_area,area WHERE iduser=fk_trainer_id AND fk_area_id=idarea AND idarea=?");) {
 			ps.setInt(1, areaId);
 			ResultSet rs = ps.executeQuery();
 			int count = 0;
@@ -166,7 +166,7 @@ public class DatabaseHelper {
 	public static int getTrainersCountByType(int typeId) {
 		try (Connection conn = getConnection();
 				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(iduser)\r\n"
-						+ "+ FROM user,trainer_specialization,training_type "
+						+ " FROM user,trainer_specialization,training_type "
 						+ "WHERE iduser=fk_trainer_id AND fk_training_type=idtraining_type AND idtraining_type =?");) {
 			ps.setInt(1, typeId);
 			ResultSet rs = ps.executeQuery();

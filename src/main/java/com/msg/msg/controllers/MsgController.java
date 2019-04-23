@@ -145,4 +145,10 @@ public class MsgController {
 		messageRepository.save(message);
 	}
 
+	@PostMapping("/delete/{msgId}")
+	public void deleteMsg(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int msgId) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		messageRepository.deleteById(msgId);
+	}
 }
