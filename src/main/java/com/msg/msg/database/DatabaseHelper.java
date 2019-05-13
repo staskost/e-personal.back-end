@@ -42,6 +42,20 @@ public class DatabaseHelper {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
+	
+	public static int getSimpleUsersCount() {
+		try (Connection conn = getConnection();
+				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.user WHERE fk_role_id = 1");) {
+			int count = 0;
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				count = rs.getInt("COUNT(*)");
+			}
+			return count;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
 
 	public static int getSentMsgCount(int id) {
 		try (Connection conn = getConnection();

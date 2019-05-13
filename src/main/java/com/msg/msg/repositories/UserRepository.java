@@ -41,7 +41,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	List<User> findByTrainerTypesAndPriceLessThanEqual(TrainingType trainingType, double price);// not used
 
 	List<User> findByRole(Role role, Pageable pageable);
-
+	
+	List<User> findByUsernameStartsWith(String name);
+	
 	@Query(value = "SELECT * FROM user LIMIT ?1,?2", nativeQuery = true)
 	List<User> getAllUsers(int start, int size);
 

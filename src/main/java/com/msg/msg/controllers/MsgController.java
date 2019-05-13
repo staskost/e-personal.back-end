@@ -3,6 +3,7 @@ package com.msg.msg.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,20 @@ public class MsgController {
 		List<Message> msgs = messageRepository.findSentMessages(senderId, start, size);
 		return new Result<Message>(count, msgs);
 	}
+	
+	@GetMapping("/sent2")
+	public Result<Message> getSentMsgs(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@RequestParam int page, @RequestParam int size) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		Validations.validatePageAndSize(page, size);
+		int senderId = token.getUser().getId();
+		User sender = token.getUser();
+		int count = DatabaseHelper.getSentMsgCount(senderId);
+		List<Message> msgs = messageRepository.findBySenderOrderByDateDesc(sender, PageRequest.of(page, size));
+		return new Result<Message>(count,msgs);
+		
+	}
 
 	@GetMapping("/sent/{userId}")
 	public Result<Message> getSentMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
@@ -70,6 +85,20 @@ public class MsgController {
 		int count = DatabaseHelper.getInboxMsgCount(receiverId);
 		List<Message> msgs = messageRepository.findInboxMessages(receiverId, start, size);
 		return new Result<Message>(count, msgs);
+	}
+	
+	@GetMapping("/inbox2")
+	public Result<Message> getInboxMsgs(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@RequestParam int page, @RequestParam int size) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		Validations.validatePageAndSize(page, size);
+		int receiverId = token.getUser().getId();
+		User receiver = token.getUser();
+		int count = DatabaseHelper.getInboxMsgCount(receiverId);
+		List<Message> msgs = messageRepository.findByReceiverOrderByDateDesc(receiver, PageRequest.of(page, size));
+		return new Result<Message>(count,msgs);
+		
 	}
 
 	@GetMapping("/inbox/{userId}")

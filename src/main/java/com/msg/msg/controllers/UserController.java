@@ -69,6 +69,26 @@ public class UserController {
 		List<User> users = userRepository.getAllUsers(start, size);
 		return new Result<User>(count, users);
 	}
+	
+	@GetMapping("simple-users")//for Messenger Api
+	public Result<User> getAllSimpleUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@RequestParam int page, @RequestParam int size){
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		Validations.validatePageAndSize(page, size);
+		Role role = new Role(1, "USER");
+		int count = DatabaseHelper.getSimpleUsersCount();
+		List<User> users = userRepository.findByRole(role, PageRequest.of(page, size));
+		return new Result<User>(count, users);
+	}
+	
+	@GetMapping("/users-starts-with/{name}")
+	public List<User> getUserstartsWith(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable String name) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		List<User> users = userRepository.findByUsernameStartsWith(name);
+		return users;
+	}
 
 	@GetMapping("/trainer/{idtraining_type}/{idarea}")
 	public Result<User> getYourTrainer(@PathVariable int idtraining_type, @PathVariable int idarea,
@@ -241,7 +261,7 @@ public class UserController {
 				userRepository.save(user);
 			} else {
 				String password = user.retrievePassword();
-				String random = user2.getRandomNum();
+				String random = user2.retrieveRandomNum();
 				user.setRandomNum(random);
 				String sha256hex = DigestUtils.sha256Hex(password + random);
 				user.setPassword(sha256hex);

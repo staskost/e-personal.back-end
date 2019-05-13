@@ -194,7 +194,7 @@ public class User {
 		this.bannedStatus = activeStatus;
 	}
 
-	public String getRandomNum() {
+	public String retrieveRandomNum() {
 		return randomNum;
 	}
 
