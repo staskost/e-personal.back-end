@@ -145,21 +145,34 @@ public class MsgController {
 		}
 	}
 
-	@GetMapping("/UsersMsg/{trainerUsername}/{clientUsername}") // not used
-	public Result<Message> getUserMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@PathVariable String trainerUsername, @PathVariable String clientUsername, @RequestParam int start,
-			@RequestParam int size) {
+//	@GetMapping("/UsersMsg/{trainerUsername}/{clientUsername}") // not used
+//	public Result<Message> getUserMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+//			@PathVariable String trainerUsername, @PathVariable String clientUsername, @RequestParam int start,
+//			@RequestParam int size) {
+//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+//		Validations.validateToken(token);
+//		Validations.validateStartAndSize(start, size);
+//		User trainer = userRepository.findByUsername(trainerUsername);
+//		Validations.validateUser(trainer);
+//		User client = userRepository.findByUsername(clientUsername);
+//		Validations.validateUser(client);
+//		List<Message> msgs = messageRepository.findUserMessages(client.getId(), trainer.getId(), trainer.getId(),
+//				client.getId(), start, size);
+//		int count = DatabaseHelper.getUsersMsgCount(trainer.getId(), client.getId());
+//		return new Result<Message>(count, msgs);
+//	}
+	
+	@GetMapping("/UsersMsg/{trainerUsername}/{clientUsername}") 
+	public List<Message> getUserMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@PathVariable String trainerUsername, @PathVariable String clientUsername) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
-		Validations.validateStartAndSize(start, size);
 		User trainer = userRepository.findByUsername(trainerUsername);
 		Validations.validateUser(trainer);
 		User client = userRepository.findByUsername(clientUsername);
 		Validations.validateUser(client);
-		List<Message> msgs = messageRepository.findUserMessages(client.getId(), trainer.getId(), trainer.getId(),
-				client.getId(), start, size);
-		int count = DatabaseHelper.getUsersMsgCount(trainer.getId(), client.getId());
-		return new Result<Message>(count, msgs);
+		return messageRepository.findUserMessages(client.getId(), trainer.getId(), trainer.getId(),
+				client.getId());
 	}
 
 	@PostMapping("/save/{receiverUsername}")

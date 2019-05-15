@@ -65,14 +65,19 @@ public class UserController {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
 		Validations.validateStartAndSize(start, size);
+		User admin = token.getUser();
+		if (admin.getRole().getId() == 3) {
 		int count = DatabaseHelper.getUsersCount();
 		List<User> users = userRepository.getAllUsers(start, size);
 		return new Result<User>(count, users);
+		} else {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
+		}
 	}
-	
-	@GetMapping("simple-users")//for Messenger Api
+
+	@GetMapping("simple-users") // for Messenger Api
 	public Result<User> getAllSimpleUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@RequestParam int page, @RequestParam int size){
+			@RequestParam int page, @RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
 		Validations.validatePageAndSize(page, size);
@@ -81,9 +86,10 @@ public class UserController {
 		List<User> users = userRepository.findByRole(role, PageRequest.of(page, size));
 		return new Result<User>(count, users);
 	}
-	
+
 	@GetMapping("/users-starts-with/{name}")
-	public List<User> getUserstartsWith(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable String name) {
+	public List<User> getUserstartsWith(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@PathVariable String name) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
 		List<User> users = userRepository.findByUsernameStartsWith(name);
@@ -233,20 +239,30 @@ public class UserController {
 	public void bannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
-		User user = userRepository.findById(iduser);
-		Validations.validateUser(user);
-		user.setBannedStatus(1);
-		userRepository.save(user);
+		User admin = token.getUser();
+		if (admin.getRole().getId() == 3) {
+			User user = userRepository.findById(iduser);
+			Validations.validateUser(user);
+			user.setBannedStatus(1);
+			userRepository.save(user);
+		} else {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
+		}
 	}
 
 	@PostMapping("unbann-user/{iduser}")
 	public void unBannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateToken(token);		
+		User admin = token.getUser();
+		if (admin.getRole().getId() == 3) {
 		User user = userRepository.findById(iduser);
 		Validations.validateUser(user);
 		user.setBannedStatus(0);
 		userRepository.save(user);
+		} else {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
+		}
 	}
 
 	@PutMapping("/update") // not used

@@ -30,8 +30,10 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 	List<Message> findBySenderAndReceiverOrReceiverAndSenderOrderByDateDesc(User sender, User receiver, User receiver2,
 			User sender2, Pageable pageable);// not used
 
-	@Query(value = "SELECT * FROM tseam_six_3.message WHERE fk_receiver_id=?1 AND fk_sender_id=?2 or fk_receiver_id=?3 AND fk_sender_id=?4 ORDER BY time_sent LIMIT ?5,?6", nativeQuery = true)
-	List<Message> findUserMessages(int fk_receiver_id, int fk_sender_id, int fk_sender_id1, int fk_receiver_id1,
-			int start, int count);// not used
+//	@Query(value = "SELECT * FROM tseam_six_3.message WHERE fk_receiver_id=?1 AND fk_sender_id=?2 or fk_receiver_id=?3 AND fk_sender_id=?4 ORDER BY time_sent DESC LIMIT ?5,?6", nativeQuery = true)
+//	List<Message> findUserMessages(int fk_receiver_id, int fk_sender_id, int fk_sender_id1, int fk_receiver_id1,
+//			int start, int count);// not used
 
+	@Query(value = "SELECT * FROM tseam_six_3.message WHERE fk_receiver_id=?1 AND fk_sender_id=?2 or fk_receiver_id=?3 AND fk_sender_id=?4 ORDER BY time_sent", nativeQuery = true)
+	List<Message> findUserMessages(int fk_receiver_id, int fk_sender_id, int fk_sender_id1, int fk_receiver_id1);
 }
