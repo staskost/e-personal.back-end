@@ -35,7 +35,18 @@ public class Validations {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
 		}
 	}
+	
+	public static void validateTokenForAdmin(Token token) {
+		if ((token.getUser().getRole().getId() != 3)||(token == null)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
+		}
+	}
 
+	public static void validateTokenForTrainer(Token token) {
+		if ((token.getUser().getRole().getId() != 2)||(token == null)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
+		}
+	}
 	public static void validateTrainingSession(TrainingSession trainingSession) {
 		if (trainingSession == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Training Session Not Found");

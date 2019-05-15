@@ -63,16 +63,11 @@ public class UserController {
 	public Result<User> getAllUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestParam int start,
 			@RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForAdmin(token);
 		Validations.validateStartAndSize(start, size);
-		User admin = token.getUser();
-		if (admin.getRole().getId() == 3) {
 		int count = DatabaseHelper.getUsersCount();
 		List<User> users = userRepository.getAllUsers(start, size);
 		return new Result<User>(count, users);
-		} else {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
-		}
 	}
 
 	@GetMapping("simple-users") // for Messenger Api
@@ -173,7 +168,7 @@ public class UserController {
 	@PostMapping("set-price/{price}")
 	public void setPrice(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable double price) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForTrainer(token);
 		User user = token.getUser();
 		user.setPrice(price);
 		userRepository.save(user);
@@ -183,7 +178,7 @@ public class UserController {
 	public void setDescription(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestBody String description) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForTrainer(token);
 		User user = token.getUser();
 		user.setDescription(description);
 		userRepository.save(user);
@@ -192,7 +187,7 @@ public class UserController {
 	@PostMapping("trainer-choose-area/{fk_area_id}")
 	public void chooseArea(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_area_id) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForTrainer(token);
 		User user = token.getUser();
 		Area area = areaRepository.findById(fk_area_id);
 		Validations.validateArea(area);
@@ -204,7 +199,7 @@ public class UserController {
 	public void trainerSpecialization(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int fk_training_type) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForTrainer(token);
 		User user = token.getUser();
 		TrainingType trainingType = trainingTypeRepository.findById(fk_training_type);
 		Validations.validateTrainingType(trainingType);
@@ -215,7 +210,7 @@ public class UserController {
 	@PostMapping("trainer-remove-area/{fk_area_id}")
 	public void removeArea(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_area_id) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForTrainer(token);
 		User user = token.getUser();
 		Area area = areaRepository.findById(fk_area_id);
 		Validations.validateArea(area);
@@ -227,7 +222,7 @@ public class UserController {
 	public void removeType(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int fk_training_type) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForTrainer(token);
 		User user = token.getUser();
 		TrainingType trainingType = trainingTypeRepository.findById(fk_training_type);
 		Validations.validateTrainingType(trainingType);
@@ -238,31 +233,22 @@ public class UserController {
 	@PostMapping("bann-user/{iduser}")
 	public void bannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
-		User admin = token.getUser();
-		if (admin.getRole().getId() == 3) {
-			User user = userRepository.findById(iduser);
-			Validations.validateUser(user);
-			user.setBannedStatus(1);
-			userRepository.save(user);
-		} else {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
-		}
+		Validations.validateTokenForAdmin(token);
+		User user = userRepository.findById(iduser);
+		Validations.validateUser(user);
+		user.setBannedStatus(1);
+		userRepository.save(user);
+
 	}
 
 	@PostMapping("unbann-user/{iduser}")
 	public void unBannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);		
-		User admin = token.getUser();
-		if (admin.getRole().getId() == 3) {
+		Validations.validateTokenForAdmin(token);
 		User user = userRepository.findById(iduser);
 		Validations.validateUser(user);
 		user.setBannedStatus(0);
 		userRepository.save(user);
-		} else {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
-		}
 	}
 
 	@PutMapping("/update") // not used

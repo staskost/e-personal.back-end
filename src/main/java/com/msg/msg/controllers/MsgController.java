@@ -68,7 +68,7 @@ public class MsgController {
 	public Result<Message> getSentMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int start, @RequestParam int size, @PathVariable int userId) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForAdmin(token);
 		Validations.validateStartAndSize(start, size);
 		int count = DatabaseHelper.getSentMsgCount(userId);
 		List<Message> msgs = messageRepository.findSentMessages(userId, start, size);
@@ -105,7 +105,7 @@ public class MsgController {
 	public Result<Message> getInboxMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int start, @RequestParam int size, @PathVariable int userId) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+		Validations.validateTokenForAdmin(token);
 		Validations.validateStartAndSize(start, size);
 		int count = DatabaseHelper.getInboxMsgCount(userId);
 		List<Message> msgs = messageRepository.findInboxMessages(userId, start, size);
