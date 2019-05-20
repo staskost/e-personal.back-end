@@ -69,6 +69,17 @@ public class UserController {
 		List<User> users = userRepository.getAllUsers(start, size);
 		return new Result<User>(count, users);
 	}
+	
+	@GetMapping("/users/all")
+	public Result<User> getAllUsersForMessengerApi(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestParam int start,
+			@RequestParam int size) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		Validations.validateStartAndSize(start, size);
+		int count = DatabaseHelper.getUsersCount();
+		List<User> users = userRepository.getAllUsers(start, size);
+		return new Result<User>(count, users);
+	}
 
 	@GetMapping("simple-users") // for Messenger Api
 	public Result<User> getAllSimpleUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
@@ -89,6 +100,24 @@ public class UserController {
 		Validations.validateToken(token);
 		List<User> users = userRepository.findByUsernameStartsWith(name);
 		return users;
+	}
+	
+	@GetMapping("/chat-usernames")
+	public Result<String> getChatUsersUsernames(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@RequestParam int start, @RequestParam int size) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		int userId = token.getUser().getId();
+		String username = token.getUser().getUsername();
+		int count = DatabaseHelper.getUserMessagesCount(userId);
+		List<String> msgsUsernames = DatabaseHelper.getUserMessagesUsernames(userId, username, start, size);
+		return new Result<String>(count, msgsUsernames);
+	}
+	
+	@GetMapping("/validate-user/{name}")
+	public void validateUsername(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable String name) {
+		User user = userRepository.findByUsername(name);
+		Validations.validateUser(user);
 	}
 
 	@GetMapping("/trainer/{idtraining_type}/{idarea}")

@@ -49,10 +49,10 @@ public class MsgController {
 		List<Message> msgs = messageRepository.findSentMessages(senderId, start, size);
 		return new Result<Message>(count, msgs);
 	}
-	
+
 	@GetMapping("/sent2")
-	public Result<Message> getSentMsgs(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@RequestParam int page, @RequestParam int size) {
+	public Result<Message> getSentMsgs(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestParam int page,
+			@RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
 		Validations.validatePageAndSize(page, size);
@@ -60,8 +60,8 @@ public class MsgController {
 		User sender = token.getUser();
 		int count = DatabaseHelper.getSentMsgCount(senderId);
 		List<Message> msgs = messageRepository.findBySenderOrderByDateDesc(sender, PageRequest.of(page, size));
-		return new Result<Message>(count,msgs);
-		
+		return new Result<Message>(count, msgs);
+
 	}
 
 	@GetMapping("/sent/{userId}")
@@ -86,7 +86,7 @@ public class MsgController {
 		List<Message> msgs = messageRepository.findInboxMessages(receiverId, start, size);
 		return new Result<Message>(count, msgs);
 	}
-	
+
 	@GetMapping("/inbox2")
 	public Result<Message> getInboxMsgs(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int page, @RequestParam int size) {
@@ -97,8 +97,8 @@ public class MsgController {
 		User receiver = token.getUser();
 		int count = DatabaseHelper.getInboxMsgCount(receiverId);
 		List<Message> msgs = messageRepository.findByReceiverOrderByDateDesc(receiver, PageRequest.of(page, size));
-		return new Result<Message>(count,msgs);
-		
+		return new Result<Message>(count, msgs);
+
 	}
 
 	@GetMapping("/inbox/{userId}")
@@ -145,6 +145,8 @@ public class MsgController {
 		}
 	}
 
+
+
 //	@GetMapping("/UsersMsg/{trainerUsername}/{clientUsername}") // not used
 //	public Result<Message> getUserMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 //			@PathVariable String trainerUsername, @PathVariable String clientUsername, @RequestParam int start,
@@ -161,8 +163,8 @@ public class MsgController {
 //		int count = DatabaseHelper.getUsersMsgCount(trainer.getId(), client.getId());
 //		return new Result<Message>(count, msgs);
 //	}
-	
-	@GetMapping("/UsersMsg/{trainerUsername}/{clientUsername}") 
+
+	@GetMapping("/UsersMsg/{trainerUsername}/{clientUsername}")
 	public List<Message> getUserMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable String trainerUsername, @PathVariable String clientUsername) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
@@ -171,8 +173,7 @@ public class MsgController {
 		Validations.validateUser(trainer);
 		User client = userRepository.findByUsername(clientUsername);
 		Validations.validateUser(client);
-		return messageRepository.findUserMessages(client.getId(), trainer.getId(), trainer.getId(),
-				client.getId());
+		return messageRepository.findUsersMessages(client.getId(), trainer.getId(), trainer.getId(), client.getId());
 	}
 
 	@PostMapping("/save/{receiverUsername}")

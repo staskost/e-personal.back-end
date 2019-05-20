@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class DatabaseHelper {
@@ -57,6 +59,44 @@ public class DatabaseHelper {
 		}
 	}
 
+	public static int getUserMessagesCount(int id) {
+		try (Connection conn = getConnection();
+			PreparedStatement ps = conn
+					.prepareStatement("SELECT COUNT(*) FROM tseam_six_3.message WHERE fk_sender_id=? OR fk_receiver_id=?");) {
+		ps.setInt(1, id);
+		ps.setInt(2, id);
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			if (rs.next()) {
+				count = rs.getInt("COUNT(*)");
+			}
+			return count;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+	
+	public static List<String> getUserMessagesUsernames(int id, String user, int start, int size) {
+		try (Connection conn = getConnection();
+			PreparedStatement ps = conn
+					.prepareStatement("SELECT DISTINCT(username) FROM tseam_six_3.message,user WHERE fk_sender_id=iduser OR fk_receiver_id=iduser AND iduser=? ORDER BY time_sent DESC LIMIT ?,?");) {
+		ps.setInt(1, id);
+		ps.setInt(2, start);
+		ps.setInt(3,size);
+			ResultSet rs = ps.executeQuery();
+			List<String> usernames = new ArrayList();
+			while (rs.next()) {
+				String username = rs.getString("username");
+				if(!username.equals(user)) {
+					usernames.add(username);
+				}
+			}
+			return usernames;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+	
 	public static int getSentMsgCount(int id) {
 		try (Connection conn = getConnection();
 				PreparedStatement ps = conn
