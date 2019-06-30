@@ -62,8 +62,8 @@ public class UserController {
 	@GetMapping("/all")
 	public Result<User> getAllUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestParam int start,
 			@RequestParam int size) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForAdmin(token);
+//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+//		Validations.validateTokenForAdmin(token);
 		Validations.validateStartAndSize(start, size);
 		int count = DatabaseHelper.getUsersCount();
 		List<User> users = userRepository.getAllUsers(start, size);
@@ -73,8 +73,8 @@ public class UserController {
 	@GetMapping("/users/all")
 	public Result<User> getAllUsersForMessengerApi(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestParam int start,
 			@RequestParam int size) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
+//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+//		Validations.validateToken(token);
 		Validations.validateStartAndSize(start, size);
 		int count = DatabaseHelper.getUsersCount();
 		List<User> users = userRepository.getAllUsers(start, size);
@@ -85,7 +85,6 @@ public class UserController {
 	public Result<User> getAllSimpleUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int page, @RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
 		Validations.validatePageAndSize(page, size);
 		Role role = new Role(1, "USER");
 		int count = DatabaseHelper.getSimpleUsersCount();
@@ -96,8 +95,6 @@ public class UserController {
 	@GetMapping("/users-starts-with/{name}")
 	public List<User> getUserstartsWith(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable String name) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
 		List<User> users = userRepository.findByUsernameStartsWith(name);
 		return users;
 	}
@@ -106,7 +103,6 @@ public class UserController {
 	public Result<String> getChatUsersUsernames(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int start, @RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
 		int userId = token.getUser().getId();
 		String username = token.getUser().getUsername();
 		int count = DatabaseHelper.getUserMessagesCount(userId);
@@ -194,75 +190,12 @@ public class UserController {
 		return userRepository.findByTrainerTypesAndPriceLessThanEqual(trainingType, price);
 	}
 
-	@PostMapping("set-price/{price}")
-	public void setPrice(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable double price) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForTrainer(token);
-		User user = token.getUser();
-		user.setPrice(price);
-		userRepository.save(user);
-	}
 
-	@PostMapping("set-description")
-	public void setDescription(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@RequestBody String description) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForTrainer(token);
-		User user = token.getUser();
-		user.setDescription(description);
-		userRepository.save(user);
-	}
-
-	@PostMapping("trainer-choose-area/{fk_area_id}")
-	public void chooseArea(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_area_id) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForTrainer(token);
-		User user = token.getUser();
-		Area area = areaRepository.findById(fk_area_id);
-		Validations.validateArea(area);
-		user.addTrainingArea(area);
-		userRepository.save(user);
-	}
-
-	@PostMapping("trainer-choose-type/{fk_training_type}")
-	public void trainerSpecialization(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@PathVariable int fk_training_type) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForTrainer(token);
-		User user = token.getUser();
-		TrainingType trainingType = trainingTypeRepository.findById(fk_training_type);
-		Validations.validateTrainingType(trainingType);
-		user.addTrainingType(trainingType);
-		userRepository.save(user);
-	}
-
-	@PostMapping("trainer-remove-area/{fk_area_id}")
-	public void removeArea(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int fk_area_id) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForTrainer(token);
-		User user = token.getUser();
-		Area area = areaRepository.findById(fk_area_id);
-		Validations.validateArea(area);
-		user.removeTrainingArea(area);
-		userRepository.save(user);
-	}
-
-	@PostMapping("trainer-remove-type/{fk_training_type}")
-	public void removeType(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@PathVariable int fk_training_type) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForTrainer(token);
-		User user = token.getUser();
-		TrainingType trainingType = trainingTypeRepository.findById(fk_training_type);
-		Validations.validateTrainingType(trainingType);
-		user.removeTrainingType(trainingType);
-		userRepository.save(user);
-	}
 
 	@PostMapping("bann-user/{iduser}")
 	public void bannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForAdmin(token);
+//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+//		Validations.validateTokenForAdmin(token);
 		User user = userRepository.findById(iduser);
 		Validations.validateUser(user);
 		user.setBannedStatus(1);
@@ -272,8 +205,8 @@ public class UserController {
 
 	@PostMapping("unbann-user/{iduser}")
 	public void unBannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateTokenForAdmin(token);
+//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+//		Validations.validateTokenForAdmin(token);
 		User user = userRepository.findById(iduser);
 		Validations.validateUser(user);
 		user.setBannedStatus(0);
@@ -283,9 +216,7 @@ public class UserController {
 	@PutMapping("/update") // not used
 	public void updateUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestBody User user) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validateToken(token);
-		int id = token.getUser().getId();
-		User user2 = userRepository.findById(id);
+		User user2 =  token.getUser();
 		User user3 = userRepository.findByEmail(user.getEmail());
 		if (user3 == null) {
 			if (user2.retrievePassword().equals(user.retrievePassword())) {

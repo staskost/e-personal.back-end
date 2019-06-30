@@ -79,12 +79,12 @@ public class DatabaseHelper {
 	public static List<String> getUserMessagesUsernames(int id, String user, int start, int size) {
 		try (Connection conn = getConnection();
 			PreparedStatement ps = conn
-					.prepareStatement("SELECT DISTINCT(username) FROM message,user WHERE fk_sender_id=iduser OR fk_receiver_id=iduser AND iduser=?  LIMIT ?,?");) {
+					.prepareStatement("SELECT DISTINCT username FROM message,user WHERE fk_sender_id=iduser OR fk_receiver_id=iduser AND iduser=?  LIMIT ?,?");) {
 		ps.setInt(1, id);
 		ps.setInt(2, start);
 		ps.setInt(3,size);
 			ResultSet rs = ps.executeQuery();
-			List<String> usernames = new ArrayList();
+			List<String> usernames = new ArrayList<String>();
 			while (rs.next()) {
 				String username = rs.getString("username");
 				if(!username.equals(user)) {

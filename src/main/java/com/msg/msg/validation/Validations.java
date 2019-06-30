@@ -1,6 +1,9 @@
 package com.msg.msg.validation;
 
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.msg.msg.entities.Area;
@@ -9,6 +12,7 @@ import com.msg.msg.entities.Token;
 import com.msg.msg.entities.TrainingSession;
 import com.msg.msg.entities.TrainingType;
 import com.msg.msg.entities.User;
+
 
 public class Validations {
 
