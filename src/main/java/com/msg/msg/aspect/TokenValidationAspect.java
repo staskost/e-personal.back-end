@@ -22,10 +22,15 @@ public class TokenValidationAspect {
 	@Pointcut("execution(* com.msg.msg.controllers.*.*(..))")
 	private void pointCutForAllControllers() {
 	}
-	
+
 	@Pointcut("execution(* com.msg.msg.controllers.TrainerController.*(..))")
 	private void pointCutForTrainerController() {
-		
+
+	}
+
+	@Pointcut("execution(* com.msg.msg.controllers.AdminController.*(..))")
+	private void pointCutForAdminController() {
+
 	}
 
 	@Before("pointCutForAllControllers())")
@@ -42,9 +47,9 @@ public class TokenValidationAspect {
 			}
 		}
 	}
-	
+
 	@Before("pointCutForTrainerController())")
-	private void adviceForValidationOfTokenForAdmin(JoinPoint theJoinPoint) {
+	private void adviceForValidationOfTokenForTrainer(JoinPoint theJoinPoint) {
 		MethodSignature methodSig = (MethodSignature) theJoinPoint.getSignature();
 		System.out.println("Method called " + methodSig);
 		String[] parameterNames = methodSig.getParameterNames();
@@ -54,6 +59,21 @@ public class TokenValidationAspect {
 				String alphanumeric = (String) arguments[i];
 				Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 				Validations.validateTokenForTrainer(token);
+			}
+		}
+	}
+
+	@Before("pointCutForAdminController())")
+	private void adviceForValidationOfTokenForAdmin(JoinPoint theJoinPoint) {
+		MethodSignature methodSig = (MethodSignature) theJoinPoint.getSignature();
+		System.out.println("Method called " + methodSig);
+		String[] parameterNames = methodSig.getParameterNames();
+		Object[] arguments = theJoinPoint.getArgs();
+		for (int i = 0; i < parameterNames.length; i++) {
+			if (parameterNames[i].equals("alphanumeric")) {
+				String alphanumeric = (String) arguments[i];
+				Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+				Validations.validateTokenForAdmin(token);
 			}
 		}
 	}

@@ -27,9 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http.authorizeRequests()
-		.antMatchers(HttpMethod.GET, "/find/all").hasRole("ADMIN")
-		.antMatchers(HttpMethod.POST, "/find/unbann-user/**").hasRole("ADMIN")
-		.antMatchers(HttpMethod.POST, "/find/bann-user/**").hasRole("ADMIN")
+		.antMatchers(HttpMethod.GET, "/admin/hello").hasRole("ADMIN")// Using this method for Security example
 		.and()
 		.httpBasic()
 		.and()

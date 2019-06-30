@@ -33,7 +33,7 @@ import com.msg.msg.repositories.UserRepository;
 import com.msg.msg.validation.Validations;
 
 @RestController
-@RequestMapping("/find")
+@RequestMapping("/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -59,32 +59,10 @@ public class UserController {
 		return user;
 	}
 
-	@GetMapping("/all")
-	public Result<User> getAllUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestParam int start,
-			@RequestParam int size) {
-//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-//		Validations.validateTokenForAdmin(token);
-		Validations.validateStartAndSize(start, size);
-		int count = DatabaseHelper.getUsersCount();
-		List<User> users = userRepository.getAllUsers(start, size);
-		return new Result<User>(count, users);
-	}
-	
-	@GetMapping("/users/all")
-	public Result<User> getAllUsersForMessengerApi(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestParam int start,
-			@RequestParam int size) {
-//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-//		Validations.validateToken(token);
-		Validations.validateStartAndSize(start, size);
-		int count = DatabaseHelper.getUsersCount();
-		List<User> users = userRepository.getAllUsers(start, size);
-		return new Result<User>(count, users);
-	}
-
 	@GetMapping("simple-users") // for Messenger Api
 	public Result<User> getAllSimpleUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int page, @RequestParam int size) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validatePageAndSize(page, size);
 		Role role = new Role(1, "USER");
 		int count = DatabaseHelper.getSimpleUsersCount();
@@ -92,14 +70,14 @@ public class UserController {
 		return new Result<User>(count, users);
 	}
 
-	@GetMapping("/users-starts-with/{name}")
+	@GetMapping("/users-starts-with/{name}")// for Messenger Api
 	public List<User> getUserstartsWith(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable String name) {
 		List<User> users = userRepository.findByUsernameStartsWith(name);
 		return users;
 	}
 	
-	@GetMapping("/chat-usernames")
+	@GetMapping("/chat-usernames")// for Messenger Api
 	public Result<String> getChatUsersUsernames(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int start, @RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
@@ -110,7 +88,7 @@ public class UserController {
 		return new Result<String>(count, msgsUsernames);
 	}
 	
-	@GetMapping("/validate-user/{name}")
+	@GetMapping("/validate-user/{name}")// for Messenger Api
 	public void validateUsername(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable String name) {
 		User user = userRepository.findByUsername(name);
 		Validations.validateUser(user);
@@ -188,29 +166,6 @@ public class UserController {
 		TrainingType trainingType = trainingTypeRepository.findById(idtraining_type);
 		Validations.validateTrainingType(trainingType);
 		return userRepository.findByTrainerTypesAndPriceLessThanEqual(trainingType, price);
-	}
-
-
-
-	@PostMapping("bann-user/{iduser}")
-	public void bannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
-//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-//		Validations.validateTokenForAdmin(token);
-		User user = userRepository.findById(iduser);
-		Validations.validateUser(user);
-		user.setBannedStatus(1);
-		userRepository.save(user);
-
-	}
-
-	@PostMapping("unbann-user/{iduser}")
-	public void unBannUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable int iduser) {
-//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-//		Validations.validateTokenForAdmin(token);
-		User user = userRepository.findById(iduser);
-		Validations.validateUser(user);
-		user.setBannedStatus(0);
-		userRepository.save(user);
 	}
 
 	@PutMapping("/update") // not used
