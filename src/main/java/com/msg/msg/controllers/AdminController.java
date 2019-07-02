@@ -3,6 +3,7 @@ package com.msg.msg.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.msg.msg.database.DatabaseHelper;
 import com.msg.msg.entities.Message;
 import com.msg.msg.entities.Result;
+import com.msg.msg.entities.Role;
 import com.msg.msg.entities.User;
 import com.msg.msg.repositories.MessageRepository;
 import com.msg.msg.repositories.TokenRepository;
@@ -57,22 +59,37 @@ public class AdminController {
 		List<User> users = userRepository.getAllUsers(start, size);
 		return new Result<User>(count, users);
 	}
+	
+	@GetMapping("/simple-users") // for Messenger Api
+	public Result<User> getAllSimpleUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@RequestParam int page, @RequestParam int size) {
+//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validatePageAndSize(page, size);
+		Role role = new Role(1, "USER");
+		int count = DatabaseHelper.getSimpleUsersCount();
+		List<User> users = userRepository.findByRole(role, PageRequest.of(page, size));
+		return new Result<User>(count, users);
+	}
 
 	@GetMapping("/sent/{userId}")
 	public Result<Message> getSentMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@RequestParam int start, @RequestParam int size, @PathVariable int userId) {
-		Validations.validateStartAndSize(start, size);
+			@RequestParam int page, @RequestParam int size, @PathVariable int userId) {
+		Validations.validatePageAndSize(page, size);
 		int count = DatabaseHelper.getSentMsgCount(userId);
-		List<Message> msgs = messageRepository.findSentMessages(userId, start, size);
+		User sender = userRepository.findById(userId);
+		Validations.validateUser(sender);
+		List<Message> msgs = messageRepository.findBySenderOrderByDateDesc(sender, PageRequest.of(page, size));
 		return new Result<Message>(count, msgs);
 	}
 
 	@GetMapping("/inbox/{userId}")
 	public Result<Message> getInboxMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@RequestParam int start, @RequestParam int size, @PathVariable int userId) {
-		Validations.validateStartAndSize(start, size);
+			@RequestParam int page, @RequestParam int size, @PathVariable int userId) {
+		Validations.validatePageAndSize(page, size);
 		int count = DatabaseHelper.getInboxMsgCount(userId);
-		List<Message> msgs = messageRepository.findInboxMessages(userId, start, size);
+		User receiver = userRepository.findById(userId);
+		Validations.validateUser(receiver);
+		List<Message> msgs = messageRepository.findByReceiverOrderByDateDesc(receiver, PageRequest.of(page, size));
 		return new Result<Message>(count, msgs);
 	}
 

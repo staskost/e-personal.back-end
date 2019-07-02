@@ -59,25 +59,14 @@ public class UserController {
 		return user;
 	}
 
-	@GetMapping("simple-users") // for Messenger Api
-	public Result<User> getAllSimpleUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@RequestParam int page, @RequestParam int size) {
-//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		Validations.validatePageAndSize(page, size);
-		Role role = new Role(1, "USER");
-		int count = DatabaseHelper.getSimpleUsersCount();
-		List<User> users = userRepository.findByRole(role, PageRequest.of(page, size));
-		return new Result<User>(count, users);
-	}
-
-	@GetMapping("/users-starts-with/{name}")// for Messenger Api
+	@GetMapping("/users-starts-with/{name}") // for Messenger Api
 	public List<User> getUserstartsWith(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable String name) {
 		List<User> users = userRepository.findByUsernameStartsWith(name);
 		return users;
 	}
-	
-	@GetMapping("/chat-usernames")// for Messenger Api
+
+	@GetMapping("/chat-usernames") // for Messenger Api
 	public Result<String> getChatUsersUsernames(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int start, @RequestParam int size) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
@@ -87,8 +76,8 @@ public class UserController {
 		List<String> msgsUsernames = DatabaseHelper.getUserMessagesUsernames(userId, username, start, size);
 		return new Result<String>(count, msgsUsernames);
 	}
-	
-	@GetMapping("/validate-user/{name}")// for Messenger Api
+
+	@GetMapping("/validate-user/{name}") // for Messenger Api
 	public void validateUsername(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable String name) {
 		User user = userRepository.findByUsername(name);
 		Validations.validateUser(user);
@@ -171,7 +160,7 @@ public class UserController {
 	@PutMapping("/update") // not used
 	public void updateUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestBody User user) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		User user2 =  token.getUser();
+		User user2 = token.getUser();
 		User user3 = userRepository.findByEmail(user.getEmail());
 		if (user3 == null) {
 			if (user2.retrievePassword().equals(user.retrievePassword())) {
@@ -188,5 +177,53 @@ public class UserController {
 		} else {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Already Exists");
 		}
+	}
+
+	@PutMapping("/update-username/{username}")
+	public void updateUsername(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@PathVariable String username) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		User testUser = userRepository.findByUsername(username);
+		if (testUser != null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username Already Exists");
+		}
+		User user = token.getUser();
+		user.setUsername(username);
+		userRepository.save(user);
+	}
+
+	@PutMapping("/update-email/{email}")
+	public void updateEmail(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable String email) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		User testUser = userRepository.findByEmail(email);
+		if (testUser != null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Already Exists");
+		}
+		User user = token.getUser();
+		user.setEmail(email);
+		userRepository.save(user);
+	}
+
+	@PutMapping("/update-firstName/{firstName}")
+	public void updateE(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable String firstName) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		User user = token.getUser();
+		user.setFirstName(firstName);
+		;
+		userRepository.save(user);
+	}
+
+	@PutMapping("/update-lastName/{lastName}")
+	public void updatelastName(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@PathVariable String lastName) {
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		User user = token.getUser();
+		user.setLastName(lastName);
+		;
+		userRepository.save(user);
 	}
 }
