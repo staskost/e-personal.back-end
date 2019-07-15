@@ -35,6 +35,9 @@ public class LoginController {
 		String username = login.getUsername();
 		String password = login.getPassword();
 		User user1 = userRepository.findByUsername(username);
+		if(user1 == null ) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Username/Password");
+		}
 		String random = user1.retrieveRandomNum();
 		String sha256hex = DigestUtils.sha256Hex(password + random);
 		User user = userRepository.findByUsernameAndPassword(username, sha256hex);

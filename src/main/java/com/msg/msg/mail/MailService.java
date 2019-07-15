@@ -20,10 +20,10 @@ public class MailService {
 
 	public void sendMail(User user) throws MailException {
 		SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setFrom("info.healthbeat@gmail.com");
+		mail.setFrom("775413718ff425");
 		mail.setTo(user.getEmail());
 		mail.setSubject("Confirm registration");
-		mail.setText("Enable your account through this link <a href=\" + temp + \">Click here</a>");
+		mail.setText("Hello World");
 		javaMailSender.send(mail);
 	}
 }

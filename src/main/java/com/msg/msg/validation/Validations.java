@@ -1,9 +1,6 @@
 package com.msg.msg.validation;
 
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.msg.msg.entities.Area;
@@ -12,7 +9,6 @@ import com.msg.msg.entities.Token;
 import com.msg.msg.entities.TrainingSession;
 import com.msg.msg.entities.TrainingType;
 import com.msg.msg.entities.User;
-
 
 public class Validations {
 
@@ -39,18 +35,19 @@ public class Validations {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
 		}
 	}
-	
+
 	public static void validateTokenForAdmin(Token token) {
-		if ((token.getUser().getRole().getId() != 3)||(token == null)) {
+		if ((token.getUser().getRole().getId() != 3) || (token == null)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
 		}
 	}
 
 	public static void validateTokenForTrainer(Token token) {
-		if ((token.getUser().getRole().getId() != 2)||(token == null)) {
+		if ((token.getUser().getRole().getId() != 2) || (token == null)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Authorized");
 		}
 	}
+
 	public static void validateTrainingSession(TrainingSession trainingSession) {
 		if (trainingSession == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Training Session Not Found");

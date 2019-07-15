@@ -25,6 +25,7 @@ import com.msg.msg.entities.Role;
 import com.msg.msg.entities.Token;
 import com.msg.msg.entities.TrainingType;
 import com.msg.msg.entities.User;
+import com.msg.msg.mail.MailService;
 import com.msg.msg.repositories.AreaRepository;
 import com.msg.msg.repositories.RoleRepository;
 import com.msg.msg.repositories.TokenRepository;
@@ -51,6 +52,7 @@ public class UserController {
 
 	@Autowired
 	public RoleRepository roleRepository;
+	
 
 	@GetMapping("/getUser/{id}")
 	public User findUser(@PathVariable int id) {

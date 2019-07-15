@@ -43,6 +43,7 @@ public class RegisterController {
 			String sha256hex = DigestUtils.sha256Hex(password + random);
 			user.setPassword(sha256hex);
 			userRepository.save(user);
+//			mailService.sendMail(user);
 		} else if ((user2 != null) && (user3 == null)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username Already Exists");
 		} else if ((user2 == null) && (user3 != null)) {
