@@ -20,11 +20,15 @@ import com.msg.msg.validation.Validations;
 @CrossOrigin(origins = "*")
 public class TrainingTypeController {
 
-	@Autowired
 	private TrainingTypeRepository trainingTypeRepository;
 
-	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	public TrainingTypeController(TrainingTypeRepository trainingTypeRepository, UserRepository userRepository) {
+		this.trainingTypeRepository = trainingTypeRepository;
+		this.userRepository = userRepository;
+	}
 
 	@GetMapping("/all")
 	private List<TrainingType> getAllTypes() {

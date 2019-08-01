@@ -23,14 +23,15 @@ import com.msg.msg.repositories.UserRepository;
 @CrossOrigin(origins = "*")
 public class RegisterController {
 
-	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private TokenRepository tokenRepository;
+	private MailService mailService;
 
 	@Autowired
-	private MailService mailService;
+	public RegisterController(UserRepository userRepository, MailService mailService) {
+		this.userRepository = userRepository;
+		this.mailService = mailService;
+	}
 
 	@PostMapping("/save")
 	public void registerUser(@RequestBody User user) throws MailException {

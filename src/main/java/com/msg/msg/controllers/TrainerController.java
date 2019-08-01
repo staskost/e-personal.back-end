@@ -23,19 +23,23 @@ import com.msg.msg.validation.Validations;
 @RequestMapping("/trainers")
 @CrossOrigin(origins = "*")
 public class TrainerController {
-	
-	@Autowired
-	private UserRepository userRepository;	
-	
-	@Autowired
+
+	private UserRepository userRepository;
+
 	private TokenRepository tokenRepository;
-	
-	@Autowired
+
 	private AreaRepository areaRepository;
 
-	@Autowired
 	private TrainingTypeRepository trainingTypeRepository;
 
+	@Autowired
+	public TrainerController(UserRepository userRepository, TokenRepository tokenRepository,
+			AreaRepository areaRepository, TrainingTypeRepository trainingTypeRepository) {
+		this.userRepository = userRepository;
+		this.tokenRepository = tokenRepository;
+		this.areaRepository = areaRepository;
+		this.trainingTypeRepository = trainingTypeRepository;
+	}
 
 	@PostMapping("set-price/{price}")
 	public void setPrice(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @PathVariable double price) {

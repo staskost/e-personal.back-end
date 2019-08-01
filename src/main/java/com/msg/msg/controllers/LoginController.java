@@ -24,18 +24,22 @@ import com.msg.msg.repositories.UserRepository;
 @CrossOrigin(origins = "*")
 public class LoginController {
 
-	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
 	private TokenRepository tokenRepository;
+
+	@Autowired
+	public LoginController(UserRepository userRepository, TokenRepository tokenRepository) {
+		this.userRepository = userRepository;
+		this.tokenRepository = tokenRepository;
+	}
 
 	@PostMapping("/user")
 	public Token loginUser(@RequestBody Login login) {
 		String username = login.getUsername();
 		String password = login.getPassword();
 		User user1 = userRepository.findByUsername(username);
-		if(user1 == null ) {
+		if (user1 == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Username/Password");
 		}
 		String random = user1.retrieveRandomNum();

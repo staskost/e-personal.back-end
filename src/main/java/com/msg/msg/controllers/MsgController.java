@@ -29,14 +29,19 @@ import com.msg.msg.validation.Validations;
 @CrossOrigin(origins = "*")
 public class MsgController {
 
-	@Autowired
 	private MessageRepository messageRepository;
 
-	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
 	private TokenRepository tokenRepository;
+
+	@Autowired
+	public MsgController(MessageRepository messageRepository, UserRepository userRepository,
+			TokenRepository tokenRepository) {
+		this.messageRepository = messageRepository;
+		this.userRepository = userRepository;
+		this.tokenRepository = tokenRepository;
+	}
 
 	@GetMapping("/sent")
 	public Result<Message> getSentMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,

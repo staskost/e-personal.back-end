@@ -19,11 +19,15 @@ import com.msg.msg.repositories.UserRepository;
 @CrossOrigin(origins = "*")
 public class AreaController {
 
-	@Autowired
 	public AreaRepository areaRepository;
 
-	@Autowired
 	public UserRepository userRepository;
+
+	@Autowired
+	public AreaController(AreaRepository areaRepository, UserRepository userRepository) {
+		this.areaRepository = areaRepository;
+		this.userRepository = userRepository;
+	}
 
 	@GetMapping("/all")
 	public List<Area> getAllAreas() {

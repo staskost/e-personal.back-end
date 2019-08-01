@@ -28,14 +28,15 @@ import com.msg.msg.validation.Validations;
 @CrossOrigin(origins = "*")
 public class AdminController {
 
-	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private TokenRepository tokenRepository;
+	private MessageRepository messageRepository;
 
 	@Autowired
-	private MessageRepository messageRepository;
+	public AdminController(UserRepository userRepository, MessageRepository messageRepository) {
+		this.userRepository = userRepository;
+		this.messageRepository = messageRepository;
+	}
 
 	@GetMapping("/hello")
 	public String sayHello() {
@@ -59,11 +60,10 @@ public class AdminController {
 		List<User> users = userRepository.getAllUsers(start, size);
 		return new Result<User>(count, users);
 	}
-	
+
 	@GetMapping("/simple-users") // for Messenger Api
 	public Result<User> getAllSimpleUsers(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int page, @RequestParam int size) {
-//		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validatePageAndSize(page, size);
 		Role role = new Role(1, "USER");
 		int count = DatabaseHelper.getSimpleUsersCount();

@@ -29,11 +29,15 @@ import java.util.stream.Collectors;
 public class FileController {
 	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-	@Autowired
 	private FileStorageService fileStorageService;
 
-	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	public FileController(FileStorageService fileStorageService, UserRepository userRepository) {
+		this.fileStorageService = fileStorageService;
+		this.userRepository = userRepository;
+	}
 
 	@PostMapping("/uploadFile")
 	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {

@@ -34,23 +34,29 @@ import com.msg.msg.validation.Validations;
 @CrossOrigin(origins = "*")
 public class TrainingSessionController {
 
-	@Autowired
 	private TrainingSessionRepository trainingSessionRepository;
 
-	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
 	private TokenRepository tokenRepository;
 
-	@Autowired
 	private TrainingTypeRepository trainingTypeRepository;
 
-	@Autowired
 	private AreaRepository areaRepository;
 
-	@Autowired
 	private ReviewRepository reviewRepository;
+
+	@Autowired
+	public TrainingSessionController(TrainingSessionRepository trainingSessionRepository, UserRepository userRepository,
+			TokenRepository tokenRepository, TrainingTypeRepository trainingTypeRepository,
+			AreaRepository areaRepository, ReviewRepository reviewRepository) {
+		this.trainingSessionRepository = trainingSessionRepository;
+		this.userRepository = userRepository;
+		this.tokenRepository = tokenRepository;
+		this.trainingTypeRepository = trainingTypeRepository;
+		this.areaRepository = areaRepository;
+		this.reviewRepository = reviewRepository;
+	}
 
 	@GetMapping("/trainer-sessions")
 	public List<TrainingSession> getTrainersSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric) {
@@ -124,21 +130,21 @@ public class TrainingSessionController {
 	}
 
 	@GetMapping("/canceled-sessions")
-	public List<TrainingSession> getCanceledSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric){
+	public List<TrainingSession> getCanceledSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
 		User trainer = token.getUser();
 		return trainingSessionRepository.findByTrainerAndCancelationStatus(trainer, 1);
 	}
-	
+
 	@GetMapping("/canceled-sessions-client")
-	public List<TrainingSession> getClientsCanceledSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric){
+	public List<TrainingSession> getClientsCanceledSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric) {
 		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
 		Validations.validateToken(token);
 		User client = token.getUser();
 		return trainingSessionRepository.findByClientAndCancelationStatus(client, 1);
 	}
-	
+
 	@PostMapping("/cancel-session/{idtraining_session}")
 	public void cancelSession(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int idtraining_session) {
@@ -149,8 +155,6 @@ public class TrainingSessionController {
 		trainingSession.setCancelationStatus(1);
 		trainingSessionRepository.save(trainingSession);
 	}
-	
-	
 
 	@PostMapping("/deleteNotifiedCanceledSessions/{idtraining_session}")
 	public void deleteCanceledSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,

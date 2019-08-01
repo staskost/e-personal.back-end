@@ -38,21 +38,26 @@ import com.msg.msg.validation.Validations;
 @CrossOrigin(origins = "*")
 public class UserController {
 
-	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
 	private AreaRepository areaRepository;
 
-	@Autowired
 	private TrainingTypeRepository trainingTypeRepository;
 
-	@Autowired
 	private TokenRepository tokenRepository;
 
-	@Autowired
 	private RoleRepository roleRepository;
 	
+	@Autowired
+	public UserController(UserRepository userRepository, AreaRepository areaRepository,
+			TrainingTypeRepository trainingTypeRepository, TokenRepository tokenRepository,
+			RoleRepository roleRepository) {
+		this.userRepository = userRepository;
+		this.areaRepository = areaRepository;
+		this.trainingTypeRepository = trainingTypeRepository;
+		this.tokenRepository = tokenRepository;
+		this.roleRepository = roleRepository;
+	}
 
 	@GetMapping("/getUser/{id}")
 	public User findUser(@PathVariable int id) {
