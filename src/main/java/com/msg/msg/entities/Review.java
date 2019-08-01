@@ -28,7 +28,7 @@ public class Review {
 	private String comment;
 
 	@Column(name = "date")
-	private Date date;// borei na ginei String
+	private Date date;
 
 	@Column(name = "rating")
 	private int rating;

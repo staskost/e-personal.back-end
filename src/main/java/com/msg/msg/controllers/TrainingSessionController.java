@@ -131,6 +131,14 @@ public class TrainingSessionController {
 		return trainingSessionRepository.findByTrainerAndCancelationStatus(trainer, 1);
 	}
 	
+	@GetMapping("/canceled-sessions-client")
+	public List<TrainingSession> getClientsCanceledSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric){
+		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
+		Validations.validateToken(token);
+		User client = token.getUser();
+		return trainingSessionRepository.findByClientAndCancelationStatus(client, 1);
+	}
+	
 	@PostMapping("/cancel-session/{idtraining_session}")
 	public void cancelSession(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable int idtraining_session) {
@@ -141,6 +149,8 @@ public class TrainingSessionController {
 		trainingSession.setCancelationStatus(1);
 		trainingSessionRepository.save(trainingSession);
 	}
+	
+	
 
 	@PostMapping("/deleteNotifiedCanceledSessions/{idtraining_session}")
 	public void deleteCanceledSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,

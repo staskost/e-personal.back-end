@@ -46,5 +46,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	
 	@Query(value = "SELECT * FROM user LIMIT ?1,?2", nativeQuery = true)
 	List<User> getAllUsers(int start, int size);
+	
+	@Query(value = "SELECT * FROM user LIMIT ?1,?2", nativeQuery = true)
+	List<User> getAllUsersForMessenger(int start, int size);
 
 }

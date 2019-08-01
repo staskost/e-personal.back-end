@@ -61,6 +61,15 @@ public class UserController {
 		return user;
 	}
 
+	@GetMapping("/getAllForChat")
+	public Result<User> getAllForChat(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
+			@RequestParam int start, @RequestParam int size){
+		Validations.validateStartAndSize(start, size);
+		int count = DatabaseHelper.getUsersCount();
+		List<User> users = userRepository.getAllUsers(start, size);
+		return new Result<User>(count, users);
+	}
+	
 	@GetMapping("/users-starts-with/{name}") // for Messenger Api
 	public List<User> getUserstartsWith(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable String name) {
