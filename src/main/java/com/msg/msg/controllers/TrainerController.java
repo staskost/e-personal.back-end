@@ -25,16 +25,16 @@ import com.msg.msg.validation.Validations;
 public class TrainerController {
 	
 	@Autowired
-	public UserRepository userRepository;	
+	private UserRepository userRepository;	
 	
 	@Autowired
-	public TokenRepository tokenRepository;
+	private TokenRepository tokenRepository;
 	
 	@Autowired
-	public AreaRepository areaRepository;
+	private AreaRepository areaRepository;
 
 	@Autowired
-	public TrainingTypeRepository trainingTypeRepository;
+	private TrainingTypeRepository trainingTypeRepository;
 
 
 	@PostMapping("set-price/{price}")

@@ -25,10 +25,10 @@ import com.msg.msg.repositories.UserRepository;
 public class LoginController {
 
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	public TokenRepository tokenRepository;
+	private TokenRepository tokenRepository;
 
 	@PostMapping("/user")
 	public Token loginUser(@RequestBody Login login) {

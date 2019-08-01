@@ -21,13 +21,13 @@ import com.msg.msg.validation.Validations;
 public class TrainingTypeController {
 
 	@Autowired
-	public TrainingTypeRepository trainingTypeRepository;
+	private TrainingTypeRepository trainingTypeRepository;
 
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@GetMapping("/all")
-	public List<TrainingType> getAllTypes() {
+	private List<TrainingType> getAllTypes() {
 		return trainingTypeRepository.findAll();
 	}
 

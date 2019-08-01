@@ -24,13 +24,13 @@ import com.msg.msg.repositories.UserRepository;
 public class RegisterController {
 
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	public TokenRepository tokenRepository;
+	private TokenRepository tokenRepository;
 
 	@Autowired
-	public MailService mailService;
+	private MailService mailService;
 
 	@PostMapping("/save")
 	public void registerUser(@RequestBody User user) throws MailException {

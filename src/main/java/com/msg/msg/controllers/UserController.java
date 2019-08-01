@@ -39,19 +39,19 @@ import com.msg.msg.validation.Validations;
 public class UserController {
 
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	public AreaRepository areaRepository;
+	private AreaRepository areaRepository;
 
 	@Autowired
-	public TrainingTypeRepository trainingTypeRepository;
+	private TrainingTypeRepository trainingTypeRepository;
 
 	@Autowired
-	public TokenRepository tokenRepository;
+	private TokenRepository tokenRepository;
 
 	@Autowired
-	public RoleRepository roleRepository;
+	private RoleRepository roleRepository;
 	
 
 	@GetMapping("/getUser/{id}")
@@ -61,7 +61,7 @@ public class UserController {
 		return user;
 	}
 
-	@GetMapping("/getAllForChat")
+	@GetMapping("/getAllForChat") // for Messenger Api
 	public Result<User> getAllForChat(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@RequestParam int start, @RequestParam int size){
 		Validations.validateStartAndSize(start, size);

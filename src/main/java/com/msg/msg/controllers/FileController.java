@@ -33,7 +33,7 @@ public class FileController {
 	private FileStorageService fileStorageService;
 
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@PostMapping("/uploadFile")
 	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {

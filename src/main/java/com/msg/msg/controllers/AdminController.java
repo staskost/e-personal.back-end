@@ -29,13 +29,13 @@ import com.msg.msg.validation.Validations;
 public class AdminController {
 
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	public TokenRepository tokenRepository;
+	private TokenRepository tokenRepository;
 
 	@Autowired
-	public MessageRepository messageRepository;
+	private MessageRepository messageRepository;
 
 	@GetMapping("/hello")
 	public String sayHello() {

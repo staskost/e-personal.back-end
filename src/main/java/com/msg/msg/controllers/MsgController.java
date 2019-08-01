@@ -30,13 +30,13 @@ import com.msg.msg.validation.Validations;
 public class MsgController {
 
 	@Autowired
-	public MessageRepository messageRepository;
+	private MessageRepository messageRepository;
 
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	public TokenRepository tokenRepository;
+	private TokenRepository tokenRepository;
 
 	@GetMapping("/sent")
 	public Result<Message> getSentMessages(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,

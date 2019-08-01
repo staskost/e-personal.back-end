@@ -35,22 +35,22 @@ import com.msg.msg.validation.Validations;
 public class TrainingSessionController {
 
 	@Autowired
-	public TrainingSessionRepository trainingSessionRepository;
+	private TrainingSessionRepository trainingSessionRepository;
 
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	public TokenRepository tokenRepository;
+	private TokenRepository tokenRepository;
 
 	@Autowired
-	public TrainingTypeRepository trainingTypeRepository;
+	private TrainingTypeRepository trainingTypeRepository;
 
 	@Autowired
-	public AreaRepository areaRepository;
+	private AreaRepository areaRepository;
 
 	@Autowired
-	public ReviewRepository reviewRepository;
+	private ReviewRepository reviewRepository;
 
 	@GetMapping("/trainer-sessions")
 	public List<TrainingSession> getTrainersSessions(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric) {
