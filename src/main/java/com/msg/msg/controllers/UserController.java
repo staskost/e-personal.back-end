@@ -47,7 +47,7 @@ public class UserController {
 	private TokenRepository tokenRepository;
 
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	public UserController(UserRepository userRepository, AreaRepository areaRepository,
 			TrainingTypeRepository trainingTypeRepository, TokenRepository tokenRepository,
@@ -67,14 +67,14 @@ public class UserController {
 	}
 
 	@GetMapping("/getAllForChat") // for Messenger Api
-	public Result<User> getAllForChat(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
-			@RequestParam int start, @RequestParam int size){
+	public Result<User> getAllForChat(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestParam int start,
+			@RequestParam int size) {
 		Validations.validateStartAndSize(start, size);
 		int count = DatabaseHelper.getUsersCount();
 		List<User> users = userRepository.getAllUsers(start, size);
 		return new Result<User>(count, users);
 	}
-	
+
 	@GetMapping("/users-starts-with/{name}") // for Messenger Api
 	public List<User> getUserstartsWith(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable String name) {
@@ -173,28 +173,7 @@ public class UserController {
 		return userRepository.findByTrainerTypesAndPriceLessThanEqual(trainingType, price);
 	}
 
-	@PutMapping("/update") // not used
-	public void updateUser(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric, @RequestBody User user) {
-		Token token = tokenRepository.findByAlphanumeric(alphanumeric);
-		User user2 = token.getUser();
-		User user3 = userRepository.findByEmail(user.getEmail());
-		if (user3 == null) {
-			if (user2.retrievePassword().equals(user.retrievePassword())) {
-				userRepository.save(user);
-			} else {
-				String password = user.retrievePassword();
-				String random = user2.retrieveRandomNum();
-				user.setRandomNum(random);
-				String sha256hex = DigestUtils.sha256Hex(password + random);
-				user.setPassword(sha256hex);
-				userRepository.save(user);
-
-			}
-		} else {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Already Exists");
-		}
-	}
-
+	// not used
 	@PutMapping("/update-username/{username}")
 	public void updateUsername(@RequestHeader(value = "X-MSG-AUTH") String alphanumeric,
 			@PathVariable String username) {
